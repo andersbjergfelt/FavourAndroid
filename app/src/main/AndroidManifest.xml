@@ -55,9 +55,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".SplashScreens.Login_SplashActivity"
-            android:label="@string/title_activity_login__splash" />
-        <activity
             android:name=".SplashScreens.SplashScreenActivity"
             android:label="@string/title_activity_splash_screen"
             android:theme="@style/SplashTheme">
