@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="jobs">
+    <item>Clean my apartment</item>
+        <item>Paint a room</item>
+        <item>Help with moving</item>
+        <item>Mow the lawn</item>
+        <item>Bake lovely cakes</item>
+        <item>Shop for me</item>
+    </string-array>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+    android:id="@+id/bottomBarItemOne"
+    android:icon="@drawable/ic_view_list_white_36dp"
+    android:title="JobList" />
+
+    <item
+        android:id="@+id/bottomBarItemTwo"
+        android:icon="@drawable/ic_google_maps_white_36dp"
+        android:title="JobMap" />
+
+
+</menu>

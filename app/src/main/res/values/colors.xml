@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#125688</color>
+    <color name="colorPrimaryDark">#125688</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#c8e8ff</color>
+
+    <color name="list_divider">#dedede</color>
+    <color name="bg_bubble_self">#E1E1E1</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_87">#DEFFFFFF</color>
+    <color name="white_54">#8AFFFFFF</color>
+</resources>
