@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.bjergfelt.himev5.addJob.addJobActivity"
+    tools:showIn="@layout/activity_add_job">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_headline"
+                android:editable="true"
+                android:hint="Headline"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/add_description"
+                android:hint="Description"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:editable="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:id="@+id/add_estimated"
+                android:hint="Estimated Time"
+                android:editable="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="15dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/add_price"
+                android:hint="Price"
+                android:editable="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_place"
+                android:hint="Place (Or get location)"
+                android:editable="true"
+                android:layout_alignTop="@+id/imageButton"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="15dp" />
+
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_map_marker_black_36dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent" />
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/mImageView"
+                android:cropToPadding="false"
+                android:clickable="true"
+                android:adjustViewBounds="false"
+                android:nestedScrollingEnabled="true"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:layout_marginBottom="42dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Take a picture of the job"
+                android:layout_toRightOf="@+id/mImageView"
+                android:id="@+id/textView2"
+                android:layout_marginBottom="63dp" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+
+
+
+
+    <!--<ImageView
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:id="@+id/mImageView"
+    android:cropToPadding="false"
+    android:clickable="true"
+    android:adjustViewBounds="false"
+    android:nestedScrollingEnabled="true"
+    android:src="@android:drawable/ic_menu_gallery"
+    android:layout_alignParentBottom="true"
+    android:layout_alignLeft="@+id/add_place"
+    android:layout_alignStart="@+id/add_place"
+    android:layout_marginBottom="42dp" />-->
+
+    <!--   <Button
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Take Picture"
+           android:id="@+id/button"
+           android:layout_marginTop="29dp"
+           android:layout_alignStart="@+id/mImageView" />-->
+
+<!--
+<EditText
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="@+id/add_headline"
+android:editable="true"
+android:hint="Headline"
+android:layout_alignParentTop="true"
+android:layout_alignParentLeft="true"
+android:layout_alignParentStart="true" />
+
+<EditText
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:inputType="textMultiLine"
+android:ems="10"
+android:id="@+id/add_description"
+android:hint="Description"
+android:layout_above="@+id/add_place"
+android:layout_alignParentLeft="true"
+android:layout_alignParentStart="true"
+android:layout_marginBottom="37dp"
+android:editable="true" />
+
+<EditText
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="@+id/add_place"
+android:hint="Place (Or get location)"
+android:layout_above="@+id/add_estimated"
+android:layout_alignParentLeft="true"
+android:layout_alignParentStart="true"
+android:layout_marginBottom="38dp"
+android:editable="true" />
+
+<ImageButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="@+id/imageButton"
+android:src="@drawable/ic_map_marker_black_36dp"
+android:background="@android:color/transparent"
+android:layout_alignTop="@+id/add_place"
+android:layout_toRightOf="@+id/add_place"
+android:layout_toEndOf="@+id/add_place" />
+
+<EditText
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:inputType="number"
+android:ems="10"
+android:id="@+id/add_price"
+android:hint="Price"
+android:layout_above="@+id/mImageView"
+android:layout_alignLeft="@+id/mImageView"
+android:layout_alignStart="@+id/mImageView"
+android:editable="true" />
+
+<EditText
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:inputType="numberDecimal"
+android:ems="10"
+android:id="@+id/add_estimated"
+android:hint="Estimated Time"
+android:layout_above="@+id/add_price"
+android:layout_alignParentLeft="true"
+android:layout_alignParentStart="true"
+android:layout_marginBottom="41dp"
+android:editable="true" />
+
+<TextView
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textAppearance="?android:attr/textAppearanceSmall"
+android:text="Take a picture of the job"
+android:id="@+id/textView2"
+android:layout_marginBottom="63dp"
+android:layout_alignBottom="@+id/mImageView"
+android:layout_toRightOf="@+id/mImageView"
+android:layout_toEndOf="@+id/mImageView" />-->
