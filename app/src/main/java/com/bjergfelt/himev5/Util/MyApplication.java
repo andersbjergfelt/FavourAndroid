@@ -66,8 +66,8 @@ public class MyApplication extends Application {
 
     public void logout() {
         pref.clear();
-        Intent intent = new Intent(this, Login_SplashActivity.class);
+        /*Intent intent = new Intent(this, Login_SplashActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 }

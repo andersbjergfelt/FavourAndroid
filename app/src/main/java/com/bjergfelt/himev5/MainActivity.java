@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             //setupTabIcons();
         }
-
+        
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

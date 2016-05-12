@@ -10,6 +10,13 @@ import com.bjergfelt.himev5.model.User;
 /**
  * Created by andersbjergfelt on 06/05/2016.
  */
+
+
+
+/*
+ SharedPreferences is an interface for accessing and modifying preference data returned by getSharedPreferences(String,int) feks.
+ Modifications to the preferences must go through an SharedPreferences.Editor object to ensure the preference values remain in a consistent state and control when they are committed to storage.
+*/
 public class PreferenceManager {
 
     private String TAG = PreferenceManager.class.getSimpleName();
@@ -29,6 +36,10 @@ public class PreferenceManager {
     //Shared pref file name
     private static final String PREF_NAME = "HiMe_Favour";
 
+    private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
+
+
+
     // All shared Preferences Keys
 
     private static final String KEY_USER_ID = "user_id";
@@ -38,6 +49,7 @@ public class PreferenceManager {
     private static final String KEY_USER_LATITUDE = "user_latitude";
     private static final String KEY_USER_LONGTITUDE = "user_longtitude";
     private static final String KEY_NOTIFICATIONS = "notifications";
+
 
 
 
@@ -75,6 +87,20 @@ public class PreferenceManager {
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
     }
+
+
+    /*
+        Methods for intro slider. Skip it if false.
+     */
+    public void setIsFirstTimeLaunch(boolean isFirstTime){
+        editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
+        editor.commit();
+    }
+
+    public boolean isFirstTimeLaunch() {
+        return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
+    }
+
 
     public void addNotification(String notification){
 

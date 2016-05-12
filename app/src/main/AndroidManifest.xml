@@ -61,7 +61,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -99,10 +98,10 @@
 
         <activity
             android:name=".JobMapActivity"
-            android:label="@string/title_activity_job_map"></activity>
+            android:label="@string/title_activity_job_map" />
         <activity
             android:name=".Chat.ChatRoomActivity"
-            android:label="Messages"></activity>
+            android:label="Messages" />
         <activity
             android:name=".JobDetailActivity"
             android:label="@string/title_job_detail"
@@ -111,6 +110,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bjergfelt.himev5.MainActivity" />
+        </activity>
+        <activity android:name=".WelcomeScreen.WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
