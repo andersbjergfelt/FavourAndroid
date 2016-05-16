@@ -2,6 +2,7 @@ package com.bjergfelt.himev5.jobData;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -89,6 +90,9 @@ public class JobDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_job_detail_head, container, false);
+        Typeface roboto = Typeface.createFromAsset(getContext().getAssets(),
+                "font/Roboto-Thin.ttf"); //use this.getAssets if you are calling from an Activity
+
         tv = (TextView) view.findViewById(R.id.nameText1);
         estimatedText = (TextView) view.findViewById(R.id.estimatedText);
         desc = (TextView) view.findViewById(R.id.descriptionText1);
@@ -107,6 +111,13 @@ public class JobDetailFragment extends Fragment {
         }else{
             iv.setImageResource(mParam2.getPhotoId());
         }
+        tv.setTypeface(roboto);
+        estimatedText.setTypeface(roboto);
+        desc.setTypeface(roboto);
+        priceText.setTypeface(roboto);
+        locationText.setTypeface(roboto);
+        priceText.setTypeface(roboto);
+        locationText.setTypeface(roboto);
 
         Activity activity = this.getActivity();
         CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);

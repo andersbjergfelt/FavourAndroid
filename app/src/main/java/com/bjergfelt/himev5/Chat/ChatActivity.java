@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,9 +26,13 @@ import android.widget.Toast;
 import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.Config;
 import com.bjergfelt.himev5.Util.MyApplication;
+import com.bjergfelt.himev5.Util.NotificationUtils;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.engineio.client.Socket;
 import com.github.nkzawa.socketio.client.IO;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -116,8 +122,13 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
 
+        btnSend.setOnClickListener(new View.OnClickListener(){
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            @Override
+            public void onClick(View v) {
+                attemptSend();
+            }
+        });
 
         //Socket.IO is bidirectional, which means we can send events to the server, but also at any time during the communication the server can send events to us.
         //We can make the socket listen on an event
@@ -126,7 +137,34 @@ public class ChatActivity extends AppCompatActivity {
         //Establish the connection here
         mSocket.connect();
 
+
+
+
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
     }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(Config.PUSH_NOTIFICATION));
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // registering the receiver for new notification
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION));
+
+        //NotificationUtils.clearNotifications();
+    }
+
 
     private void handlePushNotification(Intent intent) {
     Message message = (Message) intent.getSerializableExtra("message");
@@ -163,8 +201,35 @@ public class ChatActivity extends AppCompatActivity {
         listen on the "new message" event to recieve messages from other users
 
      */
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+           runOnUiThread(new Runnable() {
+               @Override
+               public void run() {
+                   JSONObject data = (JSONObject) args[0];
+                   String username;
+                   String message;
+                   try {
+                       username = data.getString("username");
+                       message = data.getString("message");
 
+                   } catch (JSONException e) {
+                       e.printStackTrace();
+                   }
+                    //add the message to view
 
+               }
+           });
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+    }
 
 
 

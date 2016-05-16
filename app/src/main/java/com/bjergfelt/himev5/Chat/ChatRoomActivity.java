@@ -78,6 +78,14 @@ public class ChatRoomActivity extends AppCompatActivity {
         };*/
 
         chatRoomArrayList = new ArrayList<>();
+        ChatRoom cr = new ChatRoom();
+        cr.setId("hjd_123");
+        cr.setName("Anders");
+        cr.setLastMessage("Hvornår passer det?");
+        cr.setUnreadCount(1);
+        cr.setTimestamp("12:00");
+
+        chatRoomArrayList.add(cr);
         mAdapter = new ChatRoomsAdapter(this, chatRoomArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -103,14 +111,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
             }
         }));
-        ChatRoom cr = new ChatRoom();
-        cr.setId("hjd_123");
-        cr.setName("Anders");
-        cr.setLastMessage("Hvornår passer det?");
-        cr.setUnreadCount(1);
-        cr.setTimestamp("12:00");
 
-        chatRoomArrayList.add(cr);
         mAdapter.notifyDataSetChanged();
         /**
          * Updates the chat list unread count and the last message

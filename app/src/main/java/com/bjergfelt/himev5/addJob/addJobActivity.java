@@ -106,6 +106,7 @@ public class addJobActivity extends AppCompatActivity {
         getLocationFromPrefs();
         updateValuesFromBundle(savedInstanceState);
 
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         double latitude = Double.longBitsToDouble(prefs.getLong("Latitude", 0));
         double longitude = Double.longBitsToDouble(prefs.getLong("Longitude", 0));
