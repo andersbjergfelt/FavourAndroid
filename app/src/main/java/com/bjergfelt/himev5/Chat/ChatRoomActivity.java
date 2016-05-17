@@ -49,7 +49,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_chat_room_list);
 
         /**
          * Broadcast receiver calls in two scenarios
@@ -78,14 +78,11 @@ public class ChatRoomActivity extends AppCompatActivity {
         };*/
 
         chatRoomArrayList = new ArrayList<>();
-        ChatRoom cr = new ChatRoom();
-        cr.setId("hjd_123");
-        cr.setName("Anders");
-        cr.setLastMessage("Hvornår passer det?");
-        cr.setUnreadCount(1);
-        cr.setTimestamp("12:00");
-
+        ChatRoom cr = new ChatRoom("Cz_2213", "Martin", "Hej, er du hjemme?", "12-12-2014",1);
         chatRoomArrayList.add(cr);
+        chatRoomArrayList.add(cr);
+        Log.e(TAG,cr.getName());
+        Log.e(TAG,chatRoomArrayList.size()+"");
         mAdapter = new ChatRoomsAdapter(this, chatRoomArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -94,6 +91,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         ));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+        Log.e(TAG, recyclerView.getVisibility() + "");
 
         recyclerView.addOnItemTouchListener(new ChatRoomsAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new ChatRoomsAdapter.ClickListener() {
             @Override

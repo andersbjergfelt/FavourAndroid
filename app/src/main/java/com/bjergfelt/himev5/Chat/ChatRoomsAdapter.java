@@ -24,9 +24,22 @@ import java.util.Date;
 public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.ViewHolder> {
 
     private Context context;
-    private ArrayList<ChatRoom> chatRoomArrayList;
+    private ArrayList<ChatRoom> chatRoomArrayList = new ArrayList<>();
     private static String today;
 
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView name, message, timestamp,count;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            name = (TextView) itemView.findViewById(R.id.name);
+            message = (TextView) itemView.findViewById(R.id.message_chatroom);
+            timestamp = (TextView) itemView.findViewById(R.id.timestamp);
+            count = (TextView) itemView.findViewById(R.id.count);
+
+        }
+    }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -72,6 +85,30 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
 
     }
 
+
+    @Override
+    public int getItemCount() {
+        return chatRoomArrayList.size();
+    }
+
+
+    public ChatRoomsAdapter(Context context, ArrayList<ChatRoom> chatRoomArrayList){
+        this.context = context;
+        this.chatRoomArrayList = chatRoomArrayList;
+
+        Calendar calendar = Calendar.getInstance();
+        today = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.chat_rooms_list_row, parent, false);
+        ViewHolder viewHolder = new ViewHolder(itemView);
+        return viewHolder;
+
+    }
+
     public static class RecyclerTouchListener implements  RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
@@ -113,46 +150,6 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-        }
-    }
-
-
-    @Override
-    public int getItemCount() {
-        return 0;
-    }
-
-
-    public ChatRoomsAdapter(Context context, ArrayList<ChatRoom> chatRoomArrayList){
-        this.context = context;
-        this.chatRoomArrayList = chatRoomArrayList;
-
-        Calendar calendar = Calendar.getInstance();
-        today = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chat_rooms_list_row, parent, false);
-
-        return new ViewHolder(itemView);
-    }
-
-
-
-
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, message, timestamp,count;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            name = (TextView) itemView.findViewById(R.id.name);
-            message = (TextView) itemView.findViewById(R.id.message_chatroom);
-            timestamp = (TextView) itemView.findViewById(R.id.timestamp);
-            count = (TextView) itemView.findViewById(R.id.count);
 
         }
     }

@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.Config;
 import com.bjergfelt.himev5.Util.MyApplication;
 import com.bjergfelt.himev5.Util.NotificationUtils;
+import com.bjergfelt.himev5.model.User;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.engineio.client.Socket;
 import com.github.nkzawa.socketio.client.IO;
@@ -54,8 +56,6 @@ import java.util.ArrayList;
 public class ChatActivity extends AppCompatActivity {
 
     private com.github.nkzawa.socketio.client.Socket mSocket;
-    private TextView mInputMessageView;
-    private Activity activity;
 
     private String TAG = ChatActivity.class.getSimpleName();
 
@@ -70,14 +70,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-    {
-        try {
-            mSocket = IO.socket("http://chat.socket.io");
-            //IO.socket() returns a socket for the url with default options.
-            //the method caches the result, so you always get a same Socket instance for an url from any Activity or Fragment.
 
-        } catch (URISyntaxException e){}
-    }
 
 
 
@@ -90,9 +83,16 @@ public class ChatActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        try {
+                mSocket = IO.socket("http://192.168.1.9");
+
+                //IO.socket() returns a socket for the url with default options.
+                //the method caches the result, so you always get a same Socket instance for an url from any Activity or Fragment.
+
+        } catch (URISyntaxException e){}
+
         inputMessage = (EditText) findViewById(R.id.message);
         btnSend = (Button) findViewById(R.id.btn_send);
-
         Intent intent = getIntent();
         chatRoomId = intent.getStringExtra("chat_room_id");
         String title = intent.getStringExtra("name");
@@ -106,8 +106,9 @@ public class ChatActivity extends AppCompatActivity {
 
         //Self user id is to identify the message owner
 //        String selfUserId = MyApplication.getInstance().getPrefManager().getUser().getId();
+        String selfUserId = "anders1";
        // mAdapter = new ChatRoomThreadAdapter(this, messageArrayList, selfUserId);
-        mAdapter = new ChatRoomThreadAdapter(this, messageArrayList);
+        mAdapter = new ChatRoomThreadAdapter(this, messageArrayList,selfUserId);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -127,6 +128,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 attemptSend();
+
             }
         });
 
@@ -136,7 +138,7 @@ public class ChatActivity extends AppCompatActivity {
 
         //Establish the connection here
         mSocket.connect();
-
+        mSocket.on("new message", onNewMessage);
 
 
 
@@ -186,12 +188,24 @@ public class ChatActivity extends AppCompatActivity {
     First a String, but we can change it to JSON with org.json package (Should we?)
     */
     private void attemptSend(){
-        String message = mInputMessageView.getText().toString().trim();
-        if (TextUtils.isEmpty(message)){
+        String message = inputMessage.getText().toString().trim();
+
+        if (TextUtils.isEmpty(message)) {
+            Toast.makeText(getApplicationContext(), "Enter a message", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        mInputMessageView.setText("");
+        this.inputMessage.setText("");
+        Message chatMessage = new Message();
+        chatMessage.setId("1st");
+        chatMessage.setMessage(message);
+        chatMessage.setCreatedAt(message);
+        User user = new User();
+        user.setName("Anders");
+        user.setId("anders1");
+        chatMessage.setUser(user);
+        chatMessage.setMessage(message);
+        messageArrayList.add(chatMessage);
         mSocket.emit("new message", message);
     }
 
@@ -210,15 +224,30 @@ public class ChatActivity extends AppCompatActivity {
                    JSONObject data = (JSONObject) args[0];
                    String username;
                    String message;
+                   Message chatMessage = new Message();
+                   User user = new User();
+                   user.setId("anders1");
+
+                   chatMessage.setId("1st");
+
                    try {
                        username = data.getString("username");
                        message = data.getString("message");
+                       Log.e(TAG, username + " " + message);
+                       user.setName(username);
+                       chatMessage.setMessage(message);
+                       chatMessage.setUser(user);
 
                    } catch (JSONException e) {
                        e.printStackTrace();
                    }
                     //add the message to view
-
+                   messageArrayList.add(chatMessage);
+                   mAdapter.notifyDataSetChanged();
+                   if (mAdapter.getItemCount() > 1) {
+                       // scrolling to bottom of the recycler view
+                       recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, null, mAdapter.getItemCount() - 1);
+                   }
                }
            });
         }
