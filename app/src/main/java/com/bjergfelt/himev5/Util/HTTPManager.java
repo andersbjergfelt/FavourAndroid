@@ -14,10 +14,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -30,16 +33,17 @@ import org.json.JSONObject;
  */
 
 public class HTTPManager {
-
+    private Context mContext;
     private static final String TAG = "HTTPManager";
     private static HTTPManager instance = null;
     //TODO Insert real url
-    private static final String prefixURL = "https://openshift..";
+    private static final String prefixURL = "http://favour-godeting.rhcloud.com";
 
     //for Volley API
     public RequestQueue requestQueue;
 
     private HTTPManager(Context context) {
+        mContext = context;
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
@@ -60,32 +64,33 @@ public class HTTPManager {
         return instance;
     }
 
-    public void httpGET(String suffix, final httpListener<String> listener) {
-        String url = prefixURL + suffix;
-        //Following code will make a json object request where the json response will start with object notation
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
-                url, null,
-                new Response.Listener<JSONObject>() {
+    public void getAllJobs(){
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        if (null != response.toString())
-                            listener.getResult(response.toString());
 
-                    }
-                }, new Response.ErrorListener() {
+        requestQueue = Volley.newRequestQueue(mContext);
+
+
+        //ASYNC CALL
+
+        JsonArrayRequest jor = new JsonArrayRequest(Request.Method.GET, "http://favour-godeting.rhcloud.com/jobs/getAll", new Response.Listener<JSONArray>(){
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-                if (null != error.networkResponse) {
-                    VolleyLog.d(TAG, "Error: " + error.getMessage());
-                    listener.getResult("false");
-                }
+            public void onResponse(JSONArray response) {
 
+
+                try{
+                 Log.d("response size", "" + response.length());
+                    for (int i = 0; i < response.length(); i++){
+                        JSONObject jresponse = response.getJSONObject(i);
+                        String jobName = jresponse.getString("jobName");
+
+                    }
+                 } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        });
-        requestQueue.add(request);
+        })
+
     }
 
 
