@@ -83,6 +83,7 @@ public class HTTPManager {
                 });
 
 
+
         requestQueue = Volley.newRequestQueue(mContext);
 
         //------Ajax------
@@ -171,4 +172,7 @@ public class HTTPManager {
 
         }
     }
+=======
+    }
+>>>>>>> Stashed changes
 }
