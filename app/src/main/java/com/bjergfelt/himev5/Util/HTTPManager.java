@@ -21,6 +21,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
+import com.bjergfelt.himev5.jobData.DataProvider;
 import com.bjergfelt.himev5.jobData.Job;
 import com.bjergfelt.himev5.jobData.JobFragment;
 
@@ -29,7 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * We use Volley:
@@ -45,22 +48,26 @@ public class HTTPManager {
     private static final String TAG = "HTTPManager";
     private static HTTPManager instance = null;
     //TODO Insert real url
-    private static final String prefixURL = "http://favour-godeting.rhcloud.com";
 
+    public ArrayList<Job> getJobList() {
+        return jobList;
+    }
+
+    public void setJobList(ArrayList<Job> jobList) {
+        this.jobList = jobList;
+    }
+
+    private static final String prefixURL = "http://favour-godeting.rhcloud.com";
+    DataProvider dataProvider = new DataProvider();
     //for Volley API
     public RequestQueue requestQueue;
+    private ArrayList<Job> jobList = new ArrayList<>();
 
-    private HTTPManager(Context context) {
+    public HTTPManager(Context context) {
         mContext = context;
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
-    public static synchronized HTTPManager getInstance(Context context) {
-        if (instance == null) {
-            instance = new HTTPManager(context);
-        }
-        return instance;
-    }
 
     //Makes it a bit easier so we do not need to pass context each time
 
@@ -92,14 +99,14 @@ public class HTTPManager {
 
                                 String jobName = jsonObject.getString("jobName");
                                 String jobId = jsonObject.getString("jobId");
-                                String description = jsonObject.getString("descriptoin");
+                                String description = jsonObject.getString("description");
                                 int salary = jsonObject.getInt("salary");
                                 int estimatedTime = jsonObject.getInt("estimatedTime");
                                 String category = jsonObject.getString("category");
                                 // lat and lng is saved inside "locationLatLng" as two seperate properties.
-                                int[] latLngArray = (int[]) jsonObject.get("locationLatLng");
-                                double lat = latLngArray[0];
-                                double lng = latLngArray[1];
+                                 jsonObject.get("locationLatLng");
+                                double lat = (double) latLngArray.get(0);
+                                double lng = (double) latLngArray.get(1);
                                 Location location = new Location("jobLocation");
                                 location.setLatitude(lat);
                                 location.setLongitude(lng);
@@ -114,6 +121,7 @@ public class HTTPManager {
                                 // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
                                 // All jobs fragment
                                 // fx allJobsFragment.post.add(job);
+                                jobList.add(job);
                             }
 
                             //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.

@@ -40,7 +40,7 @@ public class DataProvider {
     }
 
     public static ArrayList<Job> jobList = new ArrayList<>();
-    public static Map<String, Job> jobMap = new HashMap<>();
+/*    public static Map<String, Job> jobMap = new HashMap<>();
     static {
 
 
@@ -64,7 +64,7 @@ public class DataProvider {
                 300, 1, "Shopping", R.drawable.handtruck, locHundested, "Hundested");
 
 
-    }
+    }*/
 
     public static List<String> getJobNames() {
         List<String> list = new ArrayList<>();
@@ -75,17 +75,6 @@ public class DataProvider {
     }
 
 
-    public static void addJob(String id, String name, String description, double price, double estimatedTime, String category, int photoId, Location location, String locationName) {
-        Job job = new Job(id, name, description, price, estimatedTime, category, photoId, location, locationName);
-        jobList.add(job);
-        jobMap.put(id, job);
-    }
-
-    public static void addJob(String id, String name, String description, double price, double estimatedTime, String category, String location) {
-        Job job = new Job(id, name, description, price, estimatedTime, category, location);
-        jobList.add(job);
-        jobMap.put(id, job);
-    }
 
 
 
@@ -105,18 +94,13 @@ public class DataProvider {
 
     }
 
-    public static void addJob(String id, String name, String description, double price, double estimatedTime, String handy, String s, Bitmap photo, Location location) {
-        Job job = new Job(id,name,description,price,estimatedTime,handy,s,photo, location);
-        jobList.add(job);
-        jobMap.put(id,job);
-    }
 
 
     public  ArrayList<Job> getJobList() {
         return jobList;
     }
 
-    public  Map<String, Job> getJobMap() {
+    /*//public  Map<String, Job> getJobMap() {
         return jobMap;
-    }
+    }*/
 }

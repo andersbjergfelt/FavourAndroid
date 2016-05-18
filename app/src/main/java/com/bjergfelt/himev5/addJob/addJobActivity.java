@@ -129,7 +129,7 @@ public class addJobActivity extends AppCompatActivity {
                         .setAction("AddJob", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                DataProvider.addJob("123", textHeadline.getText().toString(), textDescription.getText().toString(), Double.parseDouble(textPrice.getText().toString()), Double.parseDouble(textEstimated.getText().toString()), "Handy", textPlace.getText().toString(), photo, mLastLocation);
+                              //  DataProvider.addJob("123", textHeadline.getText().toString(), textDescription.getText().toString(), Double.parseDouble(textPrice.getText().toString()), Double.parseDouble(textEstimated.getText().toString()), "Handy", textPlace.getText().toString(), photo, mLastLocation);
 
                             }
                         }).show();

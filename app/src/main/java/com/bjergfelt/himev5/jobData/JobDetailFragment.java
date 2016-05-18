@@ -102,14 +102,14 @@ public class JobDetailFragment extends Fragment {
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         String price = formatter.format(mParam2.getPrice());
         priceText.setText(price);
-        locationText.setText(mParam2.getLocation());
+        locationText.setText(""+mParam2.getLocationLatLong());
         estimatedText.setText(String.valueOf(mParam2.getEstimatedTime()) + "hours");
         tv.setText(mParam2.getName());
         desc.setText(mParam2.getDescription());
         if (mParam2.getPhoto() != null){
-            iv.setImageBitmap(mParam2.getPhoto());
+            //iv.setImageBitmap(mParam2.getPhoto());
         }else{
-            iv.setImageResource(mParam2.getPhotoId());
+           // iv.setImageResource(mParam2.getPhotoId());
         }
         tv.setTypeface(roboto);
         estimatedText.setTypeface(roboto);

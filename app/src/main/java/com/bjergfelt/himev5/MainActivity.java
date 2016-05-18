@@ -34,6 +34,7 @@ import android.view.MenuItem;
 
 import com.bjergfelt.himev5.Chat.ChatActivity;
 import com.bjergfelt.himev5.Chat.ChatRoomActivity;
+import com.bjergfelt.himev5.Util.HTTPManager;
 import com.bjergfelt.himev5.addJob.addJobActivity;
 import com.bjergfelt.himev5.jobData.DataProvider;
 import com.bjergfelt.himev5.jobData.Job;
@@ -72,14 +73,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             R.drawable.ic_google_maps_white_48dp
     };
     FragNavController fragNavController;
+    HTTPManager httpManager;
 
     List<Fragment> fragments = new ArrayList<>(2);
     Job job;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        httpManager = new HTTPManager(getApplicationContext());
+        httpManager.getAllJobs();
         //user interface layout for this Activity
         //To edit user interface go look for res/layout/activity_main.xml file.
         setContentView(R.layout.activity_main);
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //viewPager = (ViewPager) findViewById(R.id.viewpager);
         getLocationFromPrefs();
         fragments.add(JobFragment.newInstance(location));
-        fragments.add(JobMapActivity.newInstance(dp.getJobList()));
+        fragments.add(JobMapActivity.newInstance(httpManager.getJobList()));
 
 
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.sample_content_fragment,fragments);

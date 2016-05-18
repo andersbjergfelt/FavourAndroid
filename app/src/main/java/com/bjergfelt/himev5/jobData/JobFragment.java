@@ -43,6 +43,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     DataProvider dt = new DataProvider();
     private OnListFragmentInteractionListener mListener;
     private List<Job> jobs;
+
     CardAdapter cAdapter;
     //private List<Job> filteredJobs;
     RecyclerView recyclerView;
@@ -74,7 +75,8 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Creating an instance of HTTPManager
-        HTTPManager.getInstance(getContext());
+        HTTPManager httpManager = new HTTPManager(getContext());
+        jobs = httpManager.getJobList();
         if (getArguments() != null) {
             userLocation = getArguments().getParcelable("location");
         }

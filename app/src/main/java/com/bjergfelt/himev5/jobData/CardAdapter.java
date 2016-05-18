@@ -51,16 +51,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
         holder.mItem = jobs.get(position);
         holder.mIdView.setText(jobs.get(position).getName());
         holder.mContentView.setText(price);
-        holder.mLocation.setText(jobs.get(position).getLocation());
+        holder.mLocation.setText(""+jobs.get(position).getLocationLatLong());
         holder.kmText.setText(kilometerFormatter + " km");
         holder.bind(holder.mItem);
         //TODO Store pictures on a server instead of locally
         //Right it takes a manually inserted bitmap or the picture that was captured.
         if(jobs.get(position).getPhoto() != null) {
-            holder.iv.setImageBitmap(jobs.get(position).getPhoto());
+           // holder.iv.setImageBitmap(jobs.get(position).getPhoto());
 
         }else {
-            holder.iv.setImageResource(jobs.get(position).getPhotoId());
+           // holder.iv.setImageResource(jobs.get(position).getPhotoId());
         }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
