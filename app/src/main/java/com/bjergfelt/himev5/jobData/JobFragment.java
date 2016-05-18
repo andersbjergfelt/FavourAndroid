@@ -215,15 +215,10 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
         return userLocation;
     }
 
-    public List<Job> fetchJobs(){
-        HTTPManager.getInstance().httpGET("/users", new httpListener<String>() {
-            @Override
-            public void getResult(String object) {
 
-            }
-        });
-
-        return jobs;
+    public void refreshList () {
+        recyclerView.removeAllViews();
+        cAdapter.notifyDataSetChanged();
     }
 
 

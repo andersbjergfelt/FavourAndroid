@@ -7,44 +7,42 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**
- * Created by andersbjergfelt on 19/02/2016.
- */
 public class Job implements Parcelable {
-    private String name;
-    private String jobID;
+    private String jobName;
+    private String jobId;
     private String description;
-    private double price;
+    private double salary;
     private double estimatedTime;
     private String category;
     private Location locationLatLong;
-    private String location;
-    private int photoId;
-    private Bitmap photo;
+    private String photo;
+    private String assignedToUser;
+    private boolean jobAssigned;
+    private String providedByUser;
 
-    public Job(String id, String name, String description, double price, double estimatedTime, String handy, String s, Bitmap photo, Location location) {
-        jobID = id;
-        this.name = name;
+    public Job(String jobName, String jobId, String description, double salary, double estimatedTime, String category, Location locationLatLong, String photo, String assignedToUser, boolean jobAssigned, String providedByUser) {
+        this.jobName = jobName;
+        this.jobId = jobId;
         this.description = description;
-        this.price = price;
+        this.salary = salary;
         this.estimatedTime = estimatedTime;
-        handy = category;
-        this.location = s;
+        this.category = category;
+        this.locationLatLong = locationLatLong;
         this.photo = photo;
-        locationLatLong = location;
-
+        this.assignedToUser = assignedToUser;
+        this.jobAssigned = jobAssigned;
+        this.providedByUser = providedByUser;
     }
 
+
     protected Job(Parcel in) {
-        name = in.readString();
-        jobID = in.readString();
+        jobName = in.readString();
+        jobId = in.readString();
         description = in.readString();
-        price = in.readDouble();
+        salary = in.readDouble();
         estimatedTime = in.readDouble();
         category = in.readString();
         locationLatLong = in.readParcelable(Location.class.getClassLoader());
-        location = in.readString();
-        photoId = in.readInt();
         photo = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
@@ -60,29 +58,15 @@ public class Job implements Parcelable {
         }
     };
 
-    public Job(Job job) {
-        this.name = job.getName();
-        this.jobID = job.getJobID();
-        this.description = job.getDescription();
-        this.price = job.getPrice();
-        this.estimatedTime = job.getEstimatedTime();
-        this.category = job.getCategory();
-        this.photo = job.getPhoto();
-        locationLatLong = job.getLocationLatLong();
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
 
 
     public String getName() {
-        return name;
+        return jobName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.jobName = name;
     }
 
     public String getDescription() {
@@ -94,11 +78,11 @@ public class Job implements Parcelable {
     }
 
     public double getPrice() {
-        return price;
+        return salary;
     }
 
     public void setPrice(double price) {
-        this.price = price;
+        this.salary = price;
     }
 
     public double getEstimatedTime() {
@@ -126,73 +110,20 @@ public class Job implements Parcelable {
         this.category = category;
     }
 
-    public Job(String name, String description, double price, double estimatedTime, String category) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.estimatedTime = estimatedTime;
-        this.category = category;
-    }
 
-    public Job(String jobID, String name,  String description, double price, double estimatedTime, String category, int photoId, Location location, String locationName) {
-        this.name = name;
-        this.jobID = jobID;
-        this.description = description;
-        this.price = price;
-        this.estimatedTime = estimatedTime;
-        this.category = category;
-        this.photoId = photoId;
-        locationLatLong = location;
-        this.location = locationName;
-    }
-    public Job(String jobID, String name,  String description, double price, double estimatedTime, String category, Bitmap photo, Location location) {
-        this.name = name;
-        this.jobID = jobID;
-        this.description = description;
-        this.price = price;
-        this.estimatedTime = estimatedTime;
-        this.category = category;
-        this.photo = photo;
-        locationLatLong = location;
-
-    }
-
-    public Job(String jobID, String name,  String description, double price, double estimatedTime, String category, String location) {
-        this.name = name;
-        this.jobID = jobID;
-        this.description = description;
-        this.price = price;
-        this.estimatedTime = estimatedTime;
-        this.category = category;
-        this.location = location;
-
-    }
     public String getJobID() {
-        return jobID;
+        return jobId;
     }
 
     public void setJobID(String jobID) {
-        this.jobID = jobID;
+        this.jobId = jobID;
     }
 
-    public int getPhotoId() {
-        return photoId;
-    }
-
-    public void setPhotoId(int photoId) {
-        this.photoId = photoId;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-
-    public Bitmap getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Bitmap photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
@@ -203,15 +134,13 @@ public class Job implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(jobID);
+        dest.writeString(jobName);
+        dest.writeString(jobId);
         dest.writeString(description);
-        dest.writeDouble(price);
+        dest.writeDouble(salary);
         dest.writeDouble(estimatedTime);
         dest.writeString(category);
         dest.writeParcelable(locationLatLong, flags);
-        dest.writeString(location);
-        dest.writeInt(photoId);
-        dest.writeParcelable(photo, flags);
+        dest.writeString(photo);
     }
 }
