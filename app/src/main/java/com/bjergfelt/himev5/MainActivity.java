@@ -80,8 +80,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        httpManager = new HTTPManager(getApplicationContext());
-        httpManager.getAllJobs();
+        httpManager = new HTTPManager(this);
+
+
         //user interface layout for this Activity
         //To edit user interface go look for res/layout/activity_main.xml file.
         setContentView(R.layout.activity_main);
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        // tabLayout = (TabLayout) findViewById(R.id.tabs);
         //viewPager = (ViewPager) findViewById(R.id.viewpager);
         getLocationFromPrefs();
+        httpManager.getAllJobs();
         fragments.add(JobFragment.newInstance(location));
         fragments.add(JobMapActivity.newInstance(httpManager.getJobList()));
 

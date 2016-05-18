@@ -48,7 +48,7 @@ public class HTTPManager {
     private static final String TAG = "HTTPManager";
     private static HTTPManager instance = null;
     //TODO Insert real url
-
+    private JobFragment jobFragment = new JobFragment();
     public ArrayList<Job> getJobList() {
         return jobList;
     }
@@ -62,7 +62,7 @@ public class HTTPManager {
 
     public HTTPManager(Context context) {
         mContext = context;
-        requestQueue = Volley.newRequestQueue(context.getApplicationContext());
+        //requestQueue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
 
@@ -77,9 +77,6 @@ public class HTTPManager {
     }
 
     public void getAllJobs() {
-
-
-
         requestQueue = Volley.newRequestQueue(mContext);
 
         //------Ajax------
@@ -118,15 +115,14 @@ public class HTTPManager {
                                 // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
                                 // All jobs fragment
                                 // fx allJobsFragment.post.add(job);
-                                jobList.add(job);
+                                JobFragment.jobs.add(job);
 
                             }
 
                             //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
-                            JobFragment jobFragment = new JobFragment();
 
-                            JobFragment.setJobs(jobList);
-                            jobFragment.refreshList();
+
+                            JobFragment.refreshList();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.w("ajax error", e.getMessage().toString());

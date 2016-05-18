@@ -41,21 +41,15 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    public static List<Job> jobs;
+
     HTTPManager httpManager;
+    public static List<Job> jobs = new ArrayList<>();
 
-    CardAdapter cAdapter;
-
-    public static List<Job> getJobs() {
-        return jobs;
-    }
-
-    public static void setJobs(List<Job> jobs) {
-        JobFragment.jobs = jobs;
-    }
+   private static CardAdapter cAdapter;
+    private static RecyclerView.Adapter mAdapter;
 
     //private List<Job> filteredJobs;
-    RecyclerView recyclerView;
+    static RecyclerView recyclerView;
     private static Location userLocation;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -67,7 +61,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
      * fragment (e.g. upon screen orientation changes).
      */
     public JobFragment() {
-        jobs = getJobs();
+
     }
 
     // TODO: Customize parameter initialization
@@ -84,8 +78,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Creating an instance of HTTPManager
-        httpManager = new HTTPManager(getContext());
-
+        cAdapter = new CardAdapter(jobs, mListener, userLocation);
 
         if (getArguments() != null) {
             userLocation = getArguments().getParcelable("location");
@@ -98,13 +91,21 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_job_list, container, false);
-            recyclerView = (RecyclerView) view.findViewById(R.id.list);
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView = (RecyclerView) view.findViewById(R.id.list);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(cAdapter);
+        // recyclerView.removeAllViews();
+
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
 
         swipeRefreshLayout.setOnRefreshListener(new     SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // refreshData();
+                // refreshList();
+                //HTTPManager httpManager = new HTTPManager(getContext());
+               // httpManager.getAllJobs();
+
                 //jobs = dt.getJobList();
             }
         });
@@ -128,8 +129,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
 
 
 
-
-
+        //recyclerView.setAdapter(cAdapter);
 
 
         return view;
@@ -152,13 +152,6 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        //jobs = new ArrayList<>();
-
-
-        cAdapter = new CardAdapter(getJobs(), mListener, userLocation);
-        recyclerView.setAdapter(cAdapter);
     }
 
     @Override
@@ -228,7 +221,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     }
 
 
-    public void refreshList () {
+    public static void refreshList () {
         recyclerView.removeAllViews();
         cAdapter.notifyDataSetChanged();
     }
