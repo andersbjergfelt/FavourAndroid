@@ -40,11 +40,20 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    DataProvider dt = new DataProvider();
     private OnListFragmentInteractionListener mListener;
-    private List<Job> jobs;
+    public static List<Job> jobs;
+    HTTPManager httpManager;
 
     CardAdapter cAdapter;
+
+    public static List<Job> getJobs() {
+        return jobs;
+    }
+
+    public static void setJobs(List<Job> jobs) {
+        JobFragment.jobs = jobs;
+    }
+
     //private List<Job> filteredJobs;
     RecyclerView recyclerView;
     private static Location userLocation;
@@ -58,7 +67,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
      * fragment (e.g. upon screen orientation changes).
      */
     public JobFragment() {
-        jobs = dt.getJobList();
+        jobs = getJobs();
     }
 
     // TODO: Customize parameter initialization
@@ -75,8 +84,9 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Creating an instance of HTTPManager
-        HTTPManager httpManager = new HTTPManager(getContext());
-        jobs = httpManager.getJobList();
+        httpManager = new HTTPManager(getContext());
+
+
         if (getArguments() != null) {
             userLocation = getArguments().getParcelable("location");
         }
@@ -147,7 +157,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
         //jobs = new ArrayList<>();
 
 
-        cAdapter = new CardAdapter(jobs, mListener, userLocation);
+        cAdapter = new CardAdapter(getJobs(), mListener, userLocation);
         recyclerView.setAdapter(cAdapter);
     }
 

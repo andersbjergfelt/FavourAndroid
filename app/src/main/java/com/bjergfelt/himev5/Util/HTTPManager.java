@@ -53,15 +53,12 @@ public class HTTPManager {
         return jobList;
     }
 
-    public void setJobList(ArrayList<Job> jobList) {
-        this.jobList = jobList;
-    }
 
     private static final String prefixURL = "http://favour-godeting.rhcloud.com";
     DataProvider dataProvider = new DataProvider();
     //for Volley API
     public RequestQueue requestQueue;
-    private ArrayList<Job> jobList = new ArrayList<>();
+    static ArrayList<Job> jobList = new ArrayList<>();
 
     public HTTPManager(Context context) {
         mContext = context;
@@ -104,12 +101,12 @@ public class HTTPManager {
                                 int estimatedTime = jsonObject.getInt("estimatedTime");
                                 String category = jsonObject.getString("category");
                                 // lat and lng is saved inside "locationLatLng" as two seperate properties.
-                                 jsonObject.get("locationLatLng");
-                                double lat = (double) latLngArray.get(0);
-                                double lng = (double) latLngArray.get(1);
+
+                                //double lat = (double) latLngArray.get(0);
+                                //double lng = (double) latLngArray.get(1);
                                 Location location = new Location("jobLocation");
-                                location.setLatitude(lat);
-                                location.setLongitude(lng);
+                                location.setLatitude(12.12);
+                                location.setLongitude(40.12);
                                 // Photo is not working properly yet, therefor outcommented.
                                 String photo = jsonObject.getString("photo");
                                 boolean jobAssigned = (Boolean) jsonObject.get("jobAssigned");
@@ -122,12 +119,14 @@ public class HTTPManager {
                                 // All jobs fragment
                                 // fx allJobsFragment.post.add(job);
                                 jobList.add(job);
+
                             }
 
                             //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
                             JobFragment jobFragment = new JobFragment();
-                            jobFragment.refreshList();
 
+                            JobFragment.setJobs(jobList);
+                            jobFragment.refreshList();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.w("ajax error", e.getMessage().toString());
