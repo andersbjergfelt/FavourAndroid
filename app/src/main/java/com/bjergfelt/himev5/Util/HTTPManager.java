@@ -74,70 +74,64 @@ public class HTTPManager {
 
     public void getAllJobs() {
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://favour-godeting.rhcloud.com/jobs/getAll",
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-
-                    }
-                });
-
 
 
         requestQueue = Volley.newRequestQueue(mContext);
 
         //------Ajax------
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://favour-godeting.rhcloud.com/jobs/getAll",
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://favour-godeting.rhcloud.com/jobs/getAll", null,
                 new Response.Listener<JSONArray>() {
 
-            @Override
-            public void onResponse(JSONArray response) {
+                    @Override
+                    public void onResponse(JSONArray response) {
 
-                try {
-                    Log.w("response size: ", "" + response.length());
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject jsonObject = response.getJSONObject(i);
+                        try {
+                            Log.w("response size: ", "" + response.length());
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject jsonObject = response.getJSONObject(i);
 
-                        String jobName = jsonObject.getString("jobName");
-                        String jobId = jsonObject.getString("jobId");
-                        String description = jsonObject.getString("descriptoin");
-                        int salary = jsonObject.getInt("salary");
-                        int estimatedTime = jsonObject.getInt("estimatedTime");
-                        String category = jsonObject.getString("category");
-                        // lat and lng is saved inside "locationLatLng" as two seperate properties.
-                        int[] latLngArray = (int[]) jsonObject.get("locationLatLng");
-                        double lat = latLngArray[0];
-                        double lng = latLngArray[1];
-                        Location location = new Location("jobLocation");
-                        location.setLatitude(lat);
-                        location.setLongitude(lng);
-                        // Photo is not working properly yet, therefor outcommented.
-                        String photo = jsonObject.getString("photo");
-                        boolean jobAssigned = (Boolean) jsonObject.get("jobAssigned");
-                        String assignedToUser = jsonObject.getString("assignedToUser");
-                        String providedByUser = jsonObject.getString("providedByUser");
+                                String jobName = jsonObject.getString("jobName");
+                                String jobId = jsonObject.getString("jobId");
+                                String description = jsonObject.getString("descriptoin");
+                                int salary = jsonObject.getInt("salary");
+                                int estimatedTime = jsonObject.getInt("estimatedTime");
+                                String category = jsonObject.getString("category");
+                                // lat and lng is saved inside "locationLatLng" as two seperate properties.
+                                int[] latLngArray = (int[]) jsonObject.get("locationLatLng");
+                                double lat = latLngArray[0];
+                                double lng = latLngArray[1];
+                                Location location = new Location("jobLocation");
+                                location.setLatitude(lat);
+                                location.setLongitude(lng);
+                                // Photo is not working properly yet, therefor outcommented.
+                                String photo = jsonObject.getString("photo");
+                                boolean jobAssigned = (Boolean) jsonObject.get("jobAssigned");
+                                String assignedToUser = jsonObject.getString("assignedToUser");
+                                String providedByUser = jsonObject.getString("providedByUser");
 
-                        // Add new job with all the properties.
-                        Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, location, photo, assignedToUser, jobAssigned, providedByUser);
-                        // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
-                        // All jobs fragment
-                        // fx allJobsFragment.post.add(job);
+                                // Add new job with all the properties.
+                                Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, location, photo, assignedToUser, jobAssigned, providedByUser);
+                                // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
+                                // All jobs fragment
+                                // fx allJobsFragment.post.add(job);
+                            }
+
+                            //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
+                            JobFragment jobFragment = new JobFragment();
+                            jobFragment.refreshList();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.w("ajax error", e.getMessage().toString());
+                        }
                     }
-
-                    //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
-                    JobFragment jobFragment = new JobFragment();
-                    jobFragment.refreshList();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.w("ajax error", e.getMessage().toString());
-                }
-            }}, new Response.ErrorListener() {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.w("error, getAllJobs", "response error listener: " + error);
             }
         });
+
         requestQueue.add(jsonArrayRequest);
         Log.w("AJAX", "GET ALL POSTS, success");
         //------Ajax slut------
@@ -172,7 +166,5 @@ public class HTTPManager {
 
         }
     }
-=======
-    }
->>>>>>> Stashed changes
 }
+
