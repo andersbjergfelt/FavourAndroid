@@ -49,6 +49,7 @@ public class HTTPManager {
     private static HTTPManager instance = null;
     //TODO Insert real url
     private JobFragment jobFragment = new JobFragment();
+
     public ArrayList<Job> getJobList() {
         return jobList;
     }
@@ -77,7 +78,6 @@ public class HTTPManager {
     }
 
 
-
     public void addNewJob(String jobName, String jobId, String description, int salary,
                           int estimatedTime, String category, String[] locationLatLng,
                           Bitmap photo, boolean jobAssigned, String assignedToUser,
@@ -89,7 +89,7 @@ public class HTTPManager {
                 byte[] imageBytes = blob.toByteArray();
                 final String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
-                JSONArray jsonArrayParams = new JSONArray();
+                //JSONArray jsonArrayParams = new JSONArray();
                 JSONObject jsonObjectParams = new JSONObject();
                 jsonObjectParams.put("jobName", jobName);
                 jsonObjectParams.put("jobId", jobId);
@@ -98,12 +98,102 @@ public class HTTPManager {
                 jsonObjectParams.put("estimatedTime", estimatedTime);
                 jsonObjectParams.put("category", category);
 
+                // JSON Array for lattitude and longitude.
+                JSONArray latLngArray = new JSONArray();
+                // JSON object for lattitude and longitude.
+                JSONObject latLngObject = new JSONObject();
+                latLngObject.put("lat", locationLatLng[0]);
+                latLngObject.put("lng", locationLatLng[1]);
+                // Insert the JSON object containing longitude and attitude into the JSON array.
+                latLngArray.put(latLngObject);
+                // Insert the latLngArray into the jsonObjectParams
+                jsonObjectParams.put("locationLatLng", latLngArray);
 
-                jsonArrayParams.put(jsonObjectParams);
+                // JSON Array for photo.
+                JSONArray photoArray = new JSONArray();
+                // JSON object for photo and content type.
+                JSONObject photoObject = new JSONObject();
+                photoObject.put("image", encodedImage);
+                photoObject.put("contentType", "JPEG");
+                // Insert the JSON object containing photo and content type into the JSON array.
+                photoArray.put(photoObject);
+                // Insert the photoArray into the jsonObjectParams
+                jsonObjectParams.put("photo", photoArray);
+
+                jsonObjectParams.put("jobAssigned", jobAssigned);
+                jsonObjectParams.put("assignedToUser", assignedToUser);
+                jsonObjectParams.put("providedByUser", providedByUser);
+
+
+                Log.e("JSON: ", jsonObjectParams.toString());
+
+                String postUrl = "http://localhost:3000/jobs/addNewJob";
+
+                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, postUrl, jsonObjectParams, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.w("POST: ", "success!");
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        Log.e("POST: ", "error! " + error.getMessage());
+                    }
+                });
+
+                Volley.newRequestQueue(mContext).add(jsonRequest);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
+
+        } else {
+
+            try {
+                JSONObject jsonObjectParams = new JSONObject();
+                jsonObjectParams.put("jobName", jobName);
+                jsonObjectParams.put("jobId", jobId);
+                jsonObjectParams.put("description", description);
+                jsonObjectParams.put("salary", salary);
+                jsonObjectParams.put("estimatedTime", estimatedTime);
+                jsonObjectParams.put("category", category);
+
+                // JSON Array for lattitude and longitude.
+                JSONArray latLngArray = new JSONArray();
+                // JSON object for lattitude and longitude.
+                JSONObject latLngObject = new JSONObject();
+                latLngObject.put("lat", locationLatLng[0]);
+                latLngObject.put("lng", locationLatLng[1]);
+                // Insert the JSON object containing longitude and attitude into the JSON array.
+                latLngArray.put(latLngObject);
+                // Insert the latLngArray into the jsonObjectParams
+                jsonObjectParams.put("locationLatLng", latLngArray);
+
+                jsonObjectParams.put("jobAssigned", jobAssigned);
+                jsonObjectParams.put("assignedToUser", assignedToUser);
+                jsonObjectParams.put("providedByUser", providedByUser);
+
+                String postUrl = "http://localhost:3000/jobs/addNewJob";
+
+                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, postUrl, jsonObjectParams, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.w("POST: ", "success!");
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        Log.e("POST: ", "error! " + error.getMessage());
+                    }
+                });
+
+                Volley.newRequestQueue(mContext).add(jsonRequest);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         }
     }

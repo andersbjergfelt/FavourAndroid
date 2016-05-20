@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FavourAndroid.iml" filepath="$PROJECT_DIR$/FavourAndroid.iml" />
-      <module fileurl="file://$PROJECT_DIR$/HiMev5.iml" filepath="$PROJECT_DIR$/HiMev5.iml" />
       <module fileurl="file://$PROJECT_DIR$/volley/Volley.iml" filepath="$PROJECT_DIR$/volley/Volley.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
