@@ -76,69 +76,7 @@ public class HTTPManager {
         return instance;
     }
 
-    public void getAllJobs() {
-        requestQueue = Volley.newRequestQueue(mContext);
 
-        //------Ajax------
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://favour-godeting.rhcloud.com/jobs/getAll", null,
-                new Response.Listener<JSONArray>() {
-
-                    @Override
-                    public void onResponse(JSONArray response) {
-
-                        try {
-                            Log.w("response size: ", "" + response.length());
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject jsonObject = response.getJSONObject(i);
-
-                                String jobName = jsonObject.getString("jobName");
-                                String jobId = jsonObject.getString("jobId");
-                                String description = jsonObject.getString("description");
-                                int salary = jsonObject.getInt("salary");
-                                int estimatedTime = jsonObject.getInt("estimatedTime");
-                                String category = jsonObject.getString("category");
-                                // lat and lng is saved inside "locationLatLng" as two seperate properties.
-
-                                //double lat = (double) latLngArray.get(0);
-                                //double lng = (double) latLngArray.get(1);
-                                Location location = new Location("jobLocation");
-                                location.setLatitude(12.12);
-                                location.setLongitude(40.12);
-                                // Photo is not working properly yet, therefor outcommented.
-                                String photo = jsonObject.getString("photo");
-                                boolean jobAssigned = (Boolean) jsonObject.get("jobAssigned");
-                                String assignedToUser = jsonObject.getString("assignedToUser");
-                                String providedByUser = jsonObject.getString("providedByUser");
-
-                                // Add new job with all the properties.
-                                Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, location, photo, assignedToUser, jobAssigned, providedByUser);
-                                // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
-                                // All jobs fragment
-                                // fx allJobsFragment.post.add(job);
-                               //& JobFragment.jobs.add(job);
-
-                            }
-
-                            //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
-
-
-                            //JobFragment.refreshList();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.w("ajax error", e.getMessage().toString());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.w("error, getAllJobs", "response error listener: " + error);
-            }
-        });
-
-        requestQueue.add(jsonArrayRequest);
-        Log.w("AJAX", "GET ALL POSTS, success");
-        //------Ajax slut------
-    }
 
     public void addNewJob(String jobName, String jobId, String description, int salary,
                           int estimatedTime, String category, String[] locationLatLng,
