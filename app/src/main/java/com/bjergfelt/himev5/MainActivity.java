@@ -57,7 +57,7 @@ import java.util.List;
  */
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, JobFragment.OnListFragmentInteractionListener, JobDetailFragment.OnFragmentInteractionListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, JobFragment.OnListFragmentInteractionListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private BottomBar mBottomBar;
     private static final String LOCATION_KEY = "Location";
@@ -66,16 +66,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Location location;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    SupportMapFragment supportMapFragment; // field
-    SearchView searchView;
+    ViewPagerAdapter adapter;
     private int[] tabIcons = {
             R.drawable.ic_view_list_white_48dp,
             R.drawable.ic_google_maps_white_48dp
     };
-    FragNavController fragNavController;
     HTTPManager httpManager;
-    JobFragment jobFragment;
-    List<Fragment> fragments = new ArrayList<>(2);
+
     Job job;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +84,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         //Initialize different components for use later.
        // tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         getLocationFromPrefs();
+
+
         setupViewPager(viewPager,location);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -117,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 return;
             }
-
+            /*getSupportFragmentManager().beginTransaction()
+                    .add(R.id.frameLayout,JobFragment.newInstance(location)).commit();*/
            // setupViewPager(viewPager, location);
             //tabLayout.setupWithViewPager(viewPager);
 
@@ -141,8 +144,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void setupViewPager(ViewPager viewPager, Location location) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(JobFragment.newInstance(location), "JobList");
+        JobFragment jobFragment = JobFragment.newInstance(location);
+       // getSupportFragmentManager().beginTransaction().add(R.id.sample_content_fragment, jobFragment).commit();
+        adapter.addFragment(jobFragment, "JobList");
+
         //Log.d("MAINACTIVITY", "" + dp.getJobList().size());
         adapter.addFragment(JobMapActivity.newInstance(dp.getJobList()), "JobMap");
 
@@ -238,19 +243,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.job = item;
         JobDetailFragment jobDetailFragment = JobDetailFragment.newInstance(data, item);
         //fragments.add(JobDetailFragment.newInstance("data", item));
-
-
-       // fragNavController.switchTab(FragNavController.TAB3);
-        getSupportFragmentManager().beginTransaction().replace(R.id.sample_content_fragment, jobDetailFragment).addToBackStack(null).commit();
-        //tabLayout.removeAllTabs();
-
-        //jobDetailFragment.update(item);
+        //adapter.addFragment(jobDetailFragment,"jobdetail");
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.sample_content_fragment, jobDetailFragment).addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 
     @Override
     protected void onRestart() {
@@ -297,28 +295,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public Fragment getItem(int position) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Fragment fragment = null;
-            switch (position) {
+           // FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            // getSupportFragmentManager().beginTransaction().replace(R.id.sample_content_fragment, mFragmentList.get(position)).commit();
+           /* switch (position) {
                 case 0:
-                    fragment = JobFragment.newInstance(location);
-                    transaction.replace(R.id.sample_content_fragment,fragment );
+                    transaction.replace(R.id.sample_content_fragment, JobFragment.newInstance(location));
                     transaction.addToBackStack(null);
-
+                    transaction.commit();
                     //return mFragmentList.get(position);
 
                 case 1:
-                    fragment = JobMapActivity.newInstance(dp.getJobList());
-                    transaction.replace(R.id.sample_content_fragment,fragment);
-
-                    //return mFragmentList.get(position);*/
-            }
-                transaction.commit();
-            return fragment;
+                    transaction.replace(R.id.sample_content_fragment, JobMapActivity.newInstance(dp.getJobList()));
+                    transaction.commit();
+                    //return mFragmentList.get(position);*//*
+            }*/
+        return mFragmentList.get(position);
         }
 
         public void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
+
             titleList.add(title);
             notifyDataSetChanged();
         }

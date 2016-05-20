@@ -2,6 +2,7 @@ package com.bjergfelt.himev5.jobData;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,7 +46,6 @@ public class JobDetailFragment extends Fragment {
     private ImageView iv;
     private TextView locationText;
     private TextView estimatedText;
-    private OnFragmentInteractionListener mListener;
     private BottomBar mBottomBar;
 
     public JobDetailFragment() {
@@ -92,7 +92,7 @@ public class JobDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_job_detail_head, container, false);
         Typeface roboto = Typeface.createFromAsset(getContext().getAssets(),
                 "font/Roboto-Thin.ttf"); //use this.getAssets if you are calling from an Activity
-
+        view.setBackgroundColor(Color.WHITE);
         tv = (TextView) view.findViewById(R.id.nameText1);
         estimatedText = (TextView) view.findViewById(R.id.estimatedText);
         desc = (TextView) view.findViewById(R.id.descriptionText1);
@@ -129,44 +129,17 @@ public class JobDetailFragment extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
 
 }
