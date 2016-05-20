@@ -3,6 +3,7 @@ package com.bjergfelt.himev5.jobData;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -54,7 +55,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     public RequestQueue requestQueue;
-
+    private TabLayout tabLayout;
 
     private List<Job> jobs = new ArrayList<>();
 
@@ -102,6 +103,13 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_job_list, container, false);
@@ -110,7 +118,8 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(cAdapter);
-        // recyclerView.removeAllViews();
+        tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs);
+        //tabLayout.setVisibility(View.VISIBLE);
 
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
@@ -125,27 +134,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
                 //jobs = dt.getJobList();
             }
         });
-      /*  // Set the adapter
-        if (view instanceof RecyclerView) {
-            recyclerView  = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), mColumnCount));
-            }
 
-            jobs = new ArrayList<>();
-
-            cAdapter  = new CardAdapter(jobs,mListener, userLocation);
-
-            recyclerView.setAdapter(cAdapter);
-            //recyclerView.setHasFixedSize(true);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-        }*/
-
-
-
-        //recyclerView.setAdapter(cAdapter);
 
         getAllJobs();
         return view;
@@ -187,7 +176,16 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        //tabLayout.setVisibility(View.VISIBLE);
         getUserLocation();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        //tabLayout.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -221,11 +219,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Job item);
