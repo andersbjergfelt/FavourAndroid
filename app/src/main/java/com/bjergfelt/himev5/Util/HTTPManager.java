@@ -115,14 +115,14 @@ public class HTTPManager {
                                 // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
                                 // All jobs fragment
                                 // fx allJobsFragment.post.add(job);
-                                JobFragment.jobs.add(job);
+                               //& JobFragment.jobs.add(job);
 
                             }
 
                             //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
 
 
-                            JobFragment.refreshList();
+                            //JobFragment.refreshList();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.w("ajax error", e.getMessage().toString());

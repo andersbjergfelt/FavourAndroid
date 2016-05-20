@@ -74,68 +74,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     };
     FragNavController fragNavController;
     HTTPManager httpManager;
-
+    JobFragment jobFragment;
     List<Fragment> fragments = new ArrayList<>(2);
     Job job;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        httpManager = new HTTPManager(this);
-
-
         //user interface layout for this Activity
         //To edit user interface go look for res/layout/activity_main.xml file.
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         //Initialize different components for use later.
        // tabLayout = (TabLayout) findViewById(R.id.tabs);
-        //viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+
         getLocationFromPrefs();
-        httpManager.getAllJobs();
-        fragments.add(JobFragment.newInstance(location));
-        fragments.add(JobMapActivity.newInstance(httpManager.getJobList()));
+        setupViewPager(viewPager,location);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        setupTabIcons();
+        //fragments.add(JobFragment.newInstance(location));
+        //JobFragment jobFragment = new JobFragment();
+        //jobFragment.getAllJobs();
+        //fragments.add(JobMapActivity.newInstance(httpManager.getJobList()));
 
-
-        fragNavController = new FragNavController(getSupportFragmentManager(),R.id.sample_content_fragment,fragments);
-
-
-        mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.myCoordinator),
-                findViewById(R.id.sample_content_fragment), savedInstanceState);
-
-        mBottomBar.setItemsFromMenu(R.menu.bottombar_menu, new OnMenuTabClickListener() {
-            @Override
-            public void onMenuTabSelected(@IdRes int menuItemId) {
-                if (menuItemId == R.id.bottomBarItemOne) {
-                    // The user selected item number one.
-                    fragNavController.switchTab(FragNavController.TAB1);
-                    //fragNavController.clearStack();
-                }
-
-                if (menuItemId == R.id.bottomBarItemTwo) {
-                    // The user selected item number one.
-                    fragNavController.switchTab(FragNavController.TAB2);
-                }
-
-
-            }
-
-            @Override
-            public void onMenuTabReSelected(@IdRes int menuItemId) {
-                if (menuItemId == R.id.bottomBarItemOne) {
-                    // The user reselected item number one, scroll your content to top.
-                    fragNavController.switchTab(FragNavController.TAB1);
-                }
-
-                if (menuItemId == R.id.bottomBarItemTwo) {
-                    // The user reselected item number one, scroll your content to top.
-                    fragNavController.switchTab(FragNavController.TAB2);
-                }
-            }
-        });
-        BottomBarBadge unreadMessages = mBottomBar.makeBadgeForTabAt(0, "#FF0000", 6);
-        unreadMessages.show();
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
 
@@ -172,13 +135,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+
     }
 
 
     private void setupViewPager(ViewPager viewPager, Location location) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(JobFragment.newInstance(location), "JobList");
-        Log.d("MAINACTIVITY", "" + dp.getJobList().size());
+        //Log.d("MAINACTIVITY", "" + dp.getJobList().size());
         adapter.addFragment(JobMapActivity.newInstance(dp.getJobList()), "JobMap");
 
         viewPager.setAdapter(adapter);
@@ -268,14 +233,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onListFragmentInteraction(Job item) {
         // Create fragment and give it an argument specifying the article it should show
-        mBottomBar.hide();
+        //mBottomBar.hide();
         String data = "data passing";
         this.job = item;
         JobDetailFragment jobDetailFragment = JobDetailFragment.newInstance(data, item);
         //fragments.add(JobDetailFragment.newInstance("data", item));
 
+
        // fragNavController.switchTab(FragNavController.TAB3);
         getSupportFragmentManager().beginTransaction().replace(R.id.sample_content_fragment, jobDetailFragment).addToBackStack(null).commit();
+        //tabLayout.removeAllTabs();
 
         //jobDetailFragment.update(item);
     }
@@ -301,12 +268,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (location == null) {
             location = getLocationFromPrefs();
         }
+        
     }
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the location
         savedInstanceState.putParcelable(LOCATION_KEY, getLocationFromPrefs());
-        mBottomBar.onSaveInstanceState(savedInstanceState);
+//        mBottomBar.onSaveInstanceState(savedInstanceState);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -330,23 +298,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public Fragment getItem(int position) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+            Fragment fragment = null;
             switch (position) {
                 case 0:
-                    transaction.replace(R.id.sample_content_fragment, JobFragment.newInstance(location));
+                    fragment = JobFragment.newInstance(location);
+                    transaction.replace(R.id.sample_content_fragment,fragment );
                     transaction.addToBackStack(null);
-                    transaction.commit();
+
                     //return mFragmentList.get(position);
 
                 case 1:
-                    transaction1.replace(R.id.sample_content_fragment, JobMapActivity.newInstance(dp.getJobList()));
-                    transaction1.commit();
-                    //return mFragmentList.get(position);
+                    fragment = JobMapActivity.newInstance(dp.getJobList());
+                    transaction.replace(R.id.sample_content_fragment,fragment);
 
-
+                    //return mFragmentList.get(position);*/
             }
-
-            return mFragmentList.get(position);
+                transaction.commit();
+            return fragment;
         }
 
         public void addFragment(Fragment fragment, String title) {

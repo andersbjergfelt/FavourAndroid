@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,9 +23,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.HTTPManager;
 import com.bjergfelt.himev5.Util.httpListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +53,16 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    public RequestQueue requestQueue;
 
-    HTTPManager httpManager;
-    public static List<Job> jobs = new ArrayList<>();
 
-   private static CardAdapter cAdapter;
-    private static RecyclerView.Adapter mAdapter;
+    private List<Job> jobs = new ArrayList<>();
+
+    CardAdapter cAdapter;
+    //private static RecyclerView.Adapter mAdapter;
 
     //private List<Job> filteredJobs;
-    static RecyclerView recyclerView;
+     RecyclerView recyclerView;
     private static Location userLocation;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -78,12 +91,13 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Creating an instance of HTTPManager
-        cAdapter = new CardAdapter(jobs, mListener, userLocation);
+
 
         if (getArguments() != null) {
             userLocation = getArguments().getParcelable("location");
         }
         setHasOptionsMenu(true);
+
 
     }
 
@@ -91,11 +105,13 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_job_list, container, false);
+        cAdapter = new CardAdapter(jobs, mListener, userLocation);
         recyclerView = (RecyclerView) view.findViewById(R.id.list);
-
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(cAdapter);
         // recyclerView.removeAllViews();
+
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
 
@@ -131,7 +147,7 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
 
         //recyclerView.setAdapter(cAdapter);
 
-
+        getAllJobs();
         return view;
     }
 
@@ -221,9 +237,74 @@ public class JobFragment extends Fragment implements SearchView.OnQueryTextListe
     }
 
 
-    public static void refreshList () {
+    public  void refreshList () {
         recyclerView.removeAllViews();
         cAdapter.notifyDataSetChanged();
+    }
+
+
+    public void getAllJobs() {
+        requestQueue = Volley.newRequestQueue(getContext());
+
+        //------Ajax------
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://favour-godeting.rhcloud.com/jobs/getAll", null,
+                new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        try {
+                            Log.w("response size: ", "" + response.length());
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject jsonObject = response.getJSONObject(i);
+
+                                String jobName = jsonObject.getString("jobName");
+                                String jobId = jsonObject.getString("jobId");
+                                String description = jsonObject.getString("description");
+                                int salary = jsonObject.getInt("salary");
+                                int estimatedTime = jsonObject.getInt("estimatedTime");
+                                String category = jsonObject.getString("category");
+                                // lat and lng is saved inside "locationLatLng" as two seperate properties.
+
+                                //double lat = (double) latLngArray.get(0);
+                                //double lng = (double) latLngArray.get(1);
+                                Location location = new Location("jobLocation");
+                                location.setLatitude(12.12);
+                                location.setLongitude(40.12);
+                                // Photo is not working properly yet, therefor outcommented.
+                                String photo = jsonObject.getString("photo");
+                                boolean jobAssigned = (Boolean) jsonObject.get("jobAssigned");
+                                String assignedToUser = jsonObject.getString("assignedToUser");
+                                String providedByUser = jsonObject.getString("providedByUser");
+
+                                // Add new job with all the properties.
+                                Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, location, photo, assignedToUser, jobAssigned, providedByUser);
+                                // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
+                                // All jobs fragment
+                                // fx allJobsFragment.post.add(job);
+                                jobs.add(job);
+                                cAdapter.notifyDataSetChanged();
+                            }
+                                //recyclerView.invalidate();
+                            //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
+                            cAdapter = new CardAdapter(jobs, mListener, userLocation);
+                            recyclerView.setAdapter(cAdapter);
+                            cAdapter.notifyDataSetChanged();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.w("ajax error", e.getMessage().toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.w("error, getAllJobs", "response error listener: " + error);
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+        Log.w("AJAX", "GET ALL POSTS, success");
+        //------Ajax slut------
     }
 
 

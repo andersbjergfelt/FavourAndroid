@@ -26,7 +26,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
 
 
     public CardAdapter(List<Job> items, JobFragment.OnListFragmentInteractionListener listener, Location location) {
-        this.jobs = new ArrayList<>(items);
+        jobs = new ArrayList<>(items);
         mListener = listener;
         userLocation = location;
         //super();
@@ -175,13 +175,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
     /*
     simple approach to animating the items it is by far not the most efficient one
      */
-
-
-
-
-
-
-
 
     @Override
     public int getItemCount() {
