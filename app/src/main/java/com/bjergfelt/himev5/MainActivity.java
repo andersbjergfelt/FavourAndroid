@@ -3,6 +3,7 @@ package com.bjergfelt.himev5;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.bjergfelt.himev5.Chat.ChatActivity;
 import com.bjergfelt.himev5.Chat.ChatRoomActivity;
@@ -96,10 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
-        //fragments.add(JobFragment.newInstance(location));
-        //JobFragment jobFragment = new JobFragment();
-        //jobFragment.getAllJobs();
-        //fragments.add(JobMapActivity.newInstance(httpManager.getJobList()));
+
 
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
@@ -117,17 +116,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     // is not null.
                     location = savedInstanceState.getParcelable(LOCATION_KEY);
                 }
+
                 return;
             }
-            /*getSupportFragmentManager().beginTransaction()
-                    .add(R.id.frameLayout,JobFragment.newInstance(location)).commit();*/
-           // setupViewPager(viewPager, location);
-            //tabLayout.setupWithViewPager(viewPager);
-
-            //setupTabIcons();
         }
-        
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -137,8 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
 
     }
 
@@ -162,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public Location getLocationFromPrefs() {
-        //Restoring preferences from SplashScreen
+        //Restoring preferences from Login
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         double latitude = Double.longBitsToDouble(prefs.getLong("Latitude", 0));
         double longitude = Double.longBitsToDouble(prefs.getLong("Longitude", 0));
@@ -242,11 +232,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String data = "data passing";
         this.job = item;
         JobDetailFragment jobDetailFragment = JobDetailFragment.newInstance(data, item);
-        //fragments.add(JobDetailFragment.newInstance("data", item));
-        //adapter.addFragment(jobDetailFragment,"jobdetail");
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.sample_content_fragment, jobDetailFragment).addToBackStack(null);
         fragmentTransaction.commit();
+        tabLayout.setVisibility(View.GONE);
     }
 
 
@@ -258,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             location = getLocationFromPrefs();
         }
+
     }
 
     @Override
@@ -284,7 +274,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> titleList = new ArrayList<>();
-        int numOfTabs;
 
         public ViewPagerAdapter(FragmentManager supportFragmentManager) {
             super(supportFragmentManager);

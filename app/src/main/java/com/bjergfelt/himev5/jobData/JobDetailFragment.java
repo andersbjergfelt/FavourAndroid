@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,7 @@ public class JobDetailFragment extends Fragment {
     private ImageView iv;
     private TextView locationText;
     private TextView estimatedText;
+    private TabLayout tabLayout;
     private BottomBar mBottomBar;
 
     public JobDetailFragment() {
@@ -83,6 +85,12 @@ public class JobDetailFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        tabLayout.setVisibility(View.VISIBLE);
+
+    }
 
 
     @Override
@@ -93,6 +101,8 @@ public class JobDetailFragment extends Fragment {
         Typeface roboto = Typeface.createFromAsset(getContext().getAssets(),
                 "font/Roboto-Thin.ttf"); //use this.getAssets if you are calling from an Activity
         view.setBackgroundColor(Color.WHITE);
+        tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs);
+
         tv = (TextView) view.findViewById(R.id.nameText1);
         estimatedText = (TextView) view.findViewById(R.id.estimatedText);
         desc = (TextView) view.findViewById(R.id.descriptionText1);
@@ -133,11 +143,6 @@ public class JobDetailFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
 
