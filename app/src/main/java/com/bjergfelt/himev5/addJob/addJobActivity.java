@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bjergfelt.himev5.R;
+import com.bjergfelt.himev5.Util.HTTPManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
@@ -385,6 +386,18 @@ public class addJobActivity extends AppCompatActivity {
         }
     }
 
+    public void AddJob (String jobName, String jobId, String description, int salary,
+                        int estimatedTime, String category, String[] locationLatLng,
+                        Bitmap photo, boolean jobAssigned, String assignedToUser,
+                        String providedByUser) {
+
+        // HTTPManage instanse.
+        HTTPManager httpManager = new HTTPManager();
+        // Call httpManager method addNewJob and include required variables.
+        httpManager.addNewJob(jobName, jobId, description, salary, estimatedTime, category, locationLatLng,
+                photo, jobAssigned, assignedToUser, providedByUser);
+
+    }
 
 }
 

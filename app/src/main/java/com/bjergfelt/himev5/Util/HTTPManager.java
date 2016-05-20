@@ -50,6 +50,10 @@ public class HTTPManager {
     //TODO Insert real url
     private JobFragment jobFragment = new JobFragment();
 
+    public HTTPManager() {
+
+    }
+
     public ArrayList<Job> getJobList() {
         return jobList;
     }
