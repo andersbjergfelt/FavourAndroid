@@ -1,13 +1,13 @@
 package com.bjergfelt.himev5.addJob;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,8 +17,8 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.os.ResultReceiver;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,23 +29,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bjergfelt.himev5.R;
+import com.bjergfelt.himev5.Util.CameraUtil;
 import com.bjergfelt.himev5.Util.HTTPManager;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.bjergfelt.himev5.jobData.DataProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class addJobActivity extends AppCompatActivity {
-
+    private static final int REQUEST_CHOOSE_PHOTO = 2;
+    CameraUtil cameraUtil = new CameraUtil();
     //Defines how many pictures we want to capture
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView iv;
@@ -85,7 +79,8 @@ public class addJobActivity extends AppCompatActivity {
 
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-
+    final Context context = this;
+    private String filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +112,29 @@ public class addJobActivity extends AppCompatActivity {
         iv.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                dispatchTakePictureIntent();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                builder.setTitle("Capture picture or choose from gallery");
+
+                        builder.setItems(R.array.dialogPicture_array, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                switch (which){
+
+                                    case 0: dispatchTakePictureIntent();
+
+                                    case 1: openGallery();
+
+                                }
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+
+                // show it
+                alertDialog.show();
+
+                //dispatchTakePictureIntent();
             }
         });
 
@@ -329,30 +346,7 @@ public class addJobActivity extends AppCompatActivity {
         return image;
     }
 
-    private void setPic() {
-        // Get the dimensions of the View
-        int targetW = iv.getWidth();
-        int targetH = iv.getHeight();
 
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        photo = bitmap;
-        iv.setImageBitmap(bitmap);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -360,7 +354,27 @@ public class addJobActivity extends AppCompatActivity {
            /* Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             iv.setImageBitmap(imageBitmap);*/
-            setPic();
+            cameraUtil.scalePicture(photo,iv, mCurrentPhotoPath);
+
+        } else if (requestCode == REQUEST_CHOOSE_PHOTO && resultCode == RESULT_OK) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = context.getContentResolver().query(
+                    selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            filePath = cursor.getString(columnIndex);
+            cursor.close();
+
+           photo  = BitmapFactory.decodeFile(filePath);
+            Log.w("Image ", "selected!");
+
+            //Coverimage scaleres billedet og gemmes i coverimage-variablen
+            cameraUtil.scalePicture(photo,iv,filePath);
+
+            //Posten sendes først når der klikkes på send!
         }
     }
 
@@ -386,7 +400,14 @@ public class addJobActivity extends AppCompatActivity {
         }
     }
 
-    public void AddJob (String jobName, String jobId, String description, int salary,
+    private void openGallery() {
+        //Åbner galleriet og afventer result - resultatet sendes til onActivityResults med requestcode
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, REQUEST_CHOOSE_PHOTO);
+    }
+
+    public void addJob (String jobName, String jobId, String description, int salary,
                         int estimatedTime, String category, String[] locationLatLng,
                         Bitmap photo, boolean jobAssigned, String assignedToUser,
                         String providedByUser) {

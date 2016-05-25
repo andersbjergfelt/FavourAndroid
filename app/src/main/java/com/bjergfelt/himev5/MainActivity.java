@@ -43,10 +43,6 @@ import com.bjergfelt.himev5.jobData.Job;
 import com.bjergfelt.himev5.jobData.JobDetailFragment;
 import com.bjergfelt.himev5.jobData.JobFragment;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.ncapdevi.fragnav.FragNavController;
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.BottomBarBadge;
-import com.roughike.bottombar.OnMenuTabClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +57,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, JobFragment.OnListFragmentInteractionListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private BottomBar mBottomBar;
     private static final String LOCATION_KEY = "Location";
     DataProvider dp = new DataProvider();
     Toolbar toolbar;
@@ -214,7 +209,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.view_messages) {
             Intent intent = new Intent(this, ChatRoomActivity.class);
             startActivity(intent);
-
+        } else if (id == R.id.nav_settings){
+           Intent intent = new Intent(this, UserSettingsActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

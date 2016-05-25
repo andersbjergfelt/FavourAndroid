@@ -10,15 +10,19 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
+import com.bjergfelt.himev5.ApplyJobDialogFragment;
 import com.bjergfelt.himev5.R;
-import com.roughike.bottombar.BottomBar;
+
 
 import org.w3c.dom.Text;
 
@@ -27,7 +31,7 @@ import java.text.NumberFormat;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link OnFragmentInteractionListener} interface
+ * {@link interface
  * to handle interaction events.
  * Use the {@link JobDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -48,7 +52,7 @@ public class JobDetailFragment extends Fragment {
     private TextView locationText;
     private TextView estimatedText;
     private TabLayout tabLayout;
-    private BottomBar mBottomBar;
+    private Button applyButton;
 
     public JobDetailFragment() {
         // Required empty public constructor
@@ -104,6 +108,7 @@ public class JobDetailFragment extends Fragment {
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs);
 
         tv = (TextView) view.findViewById(R.id.nameText1);
+        applyButton = (Button) view.findViewById(R.id.apply_button);
         estimatedText = (TextView) view.findViewById(R.id.estimatedText);
         desc = (TextView) view.findViewById(R.id.descriptionText1);
         priceText = (TextView) view.findViewById(R.id.priceText1);
@@ -135,7 +140,23 @@ public class JobDetailFragment extends Fragment {
         if (appBarLayout != null) {
             appBarLayout.setTitle(mParam2.getName());
         }
+
+        applyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
+
         return view;
+
+    }
+
+    public void showDialog() {
+        ApplyJobDialogFragment applyJobFragment = new ApplyJobDialogFragment();
+
+        applyJobFragment.show(getFragmentManager(),"apply");
 
     }
 
