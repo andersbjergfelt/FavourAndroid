@@ -1,6 +1,5 @@
 package com.bjergfelt.himev5;
 
-import android.*;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -10,35 +9,29 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.bjergfelt.himev5.Util.PreferenceManager;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.bjergfelt.himev5.Util.OwnPreferenceManager;
 import com.bjergfelt.himev5.model.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -46,20 +39,23 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, GoogleApiClient.ConnectionCallbacks,
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int MY_LOCATION_REQUEST = 1;
 
     static Location mLastLocation;
+    private Button registerButton;
+
 
     // Google client to interact with Google API
     private GoogleApiClient mGoogleApiClient;
@@ -73,26 +69,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
+    private OwnPreferenceManager ownPreferenceManager;
 
-
-
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-    private PreferenceManager preferenceManager;
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "a@b.com:aa"
-    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
-
+    private UserRegisterTask mAuthRegister = null;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -106,10 +89,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         buildGoogleApiClient();
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
         Typeface roboto = Typeface.createFromAsset(getAssets(),
                 "font/Roboto-Thin.ttf"); //use this.getAssets if you are calling from an Activity
         mEmailView.setTypeface(roboto);
+        mEmailView.setText("bjergfelta@gmail.com");
 
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -123,9 +106,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
         });
+        mPasswordView.setText("Ab1234!");
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        
+
+        assert mEmailSignInButton != null;
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,6 +123,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         Button loginWithOutAuthForTest = (Button) findViewById(R.id.buttonTest);
 
+        assert loginWithOutAuthForTest != null;
         loginWithOutAuthForTest.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,11 +132,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("location", getLocation());
                     SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(v.getContext());
-                    prefs.edit().putLong("Latitude", Double.doubleToLongBits(mLastLocation.getLatitude())).commit();
-                    prefs.edit().putLong("Longitude", Double.doubleToLongBits(mLastLocation.getLongitude())).commit();
+                    prefs.edit().putLong("Latitude", Double.doubleToLongBits(mLastLocation.getLatitude())).apply();
+                    prefs.edit().putLong("Longitude", Double.doubleToLongBits(mLastLocation.getLongitude())).apply();
                     startActivity(intent);
                     //finish();
                 }
+            }
+        });
+
+        registerButton = (Button) findViewById(R.id.registerButton);
+
+        assert registerButton != null;
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptRegister();
             }
         });
 
@@ -158,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     protected synchronized void buildGoogleApiClient() {
-        Log.e("ADDJOB", "Building GoogleApiClient");
+        Log.e("LOGIN", "Building GoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -166,42 +162,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 .build();
         createLocationRequest();
     }
-
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-   
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -221,7 +181,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
+       /* boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
@@ -246,17 +206,61 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-        } else {
+        } else {*/
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
-
-
-
-        }
     }
+
+    public void attemptRegister(){
+        if (mAuthRegister != null) {
+            return;
+        }
+
+        // Reset errors.
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+
+        // Store values at the time of the login attempt.
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+       /* boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password, if the user entered one.
+        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        } else if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {*/
+        // Show a progress spinner, and kick off a background task to
+        // perform the user login attempt.
+        showProgress(true);
+        mAuthRegister = new UserRegisterTask(email, password);
+        mAuthRegister.execute((Void) null);
+    }
+
+
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
@@ -265,7 +269,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 1;
+        return password.length() > 4;
     }
 
     /**
@@ -302,49 +306,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
     }
 
     private Location getLocation() {
@@ -454,30 +415,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
                 return;
             }
-            
-            case REQUEST_READ_CONTACTS: {
-                if (requestCode == REQUEST_READ_CONTACTS) {
-                    if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        populateAutoComplete();
-                    }
-                }
-            }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
+
         }
     }
 
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
 
     @Override
     protected void onStart() {
@@ -513,6 +455,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
 
+
         public boolean isLoginAccepted() {
             return loginAccepted;
         }
@@ -524,41 +467,157 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+            Map<String, String> parameters = new HashMap<>();
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    User user = new User();
-                    user.setEmail(mEmail);
-                    preferenceManager.storeUser(user);
-                    return  pieces[1].equals(mPassword);
+            parameters.put("email", mEmail);
+            parameters.put("password", mPassword);
+
+            JSONObject jsonParams = new JSONObject(parameters);
+
+            String loginURL = "http://apifavour-ab207.rhcloud.com/login";
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, loginURL, jsonParams, new Response.Listener<JSONObject>() {
+
+
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    Log.d("LOGIN", "" + response);
+
+                    try {
+                        loginAccepted = !response.get("response").equals("Invalid password") && !response.get("response").equals("User does not exist, please try again") ;
+                        if (loginAccepted){
+                            OwnPreferenceManager ownPreferenceManager = new OwnPreferenceManager(getApplicationContext());
+                            User user = new User(null, null, mEmail);
+                            ownPreferenceManager.storeUser(user);
+                            Log.d("LOGIN", user.getEmail());
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
-            }
 
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    Log.e("LOGIN: ", "error! " + error.getMessage());
+                    loginAccepted = false;
+                }
+            });
 
-            // TODO: register the new account here.
-            return false;
+            Volley.newRequestQueue(getApplicationContext()).add(jsonRequest);
+                try{
+                    Thread.sleep(3000);
+                    showProgress(true);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            return isLoginAccepted();
         }
+
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            super.onPostExecute(success);
             mAuthTask = null;
             showProgress(false);
 
             if (success) {
-                loginAccepted = true;
                 finish();
-                Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
-                LoginActivity.this.startActivity(myIntent);
+                Intent myIntent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(myIntent);
+
+
+            } else {
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
+
+
+    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
+        public boolean registerAccepted;
+        private final String mEmail;
+        private final String mPassword;
+
+
+        public boolean isRegisterAccepted() {
+            return registerAccepted;
+        }
+
+        UserRegisterTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            Map<String, String> parameters = new HashMap<>();
+
+            parameters.put("email", mEmail);
+            parameters.put("password", mPassword);
+
+            JSONObject jsonParams = new JSONObject(parameters);
+
+            String loginURL = "http://apifavour-ab207.rhcloud.com/register";
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, loginURL, jsonParams, new Response.Listener<JSONObject>() {
+
+
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    Log.d("Register", "" + response);
+
+                    try {
+                        registerAccepted = !response.get("response").equals("Something went wrong...") && !response.get("response").equals("email already registered") && !response.get("response").equals("Password is too weak") && !response.get("response").equals("entered email is not valid") ;
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    Log.e("Register: ", "error! " + error.getMessage());
+                    registerAccepted = false;
+                }
+            });
+
+            Volley.newRequestQueue(getApplicationContext()).add(jsonRequest);
+            try{
+                Thread.sleep(3000);
+                showProgress(true);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return isRegisterAccepted();
+        }
+
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            super.onPostExecute(success);
+            mAuthTask = null;
+            showProgress(false);
+
+            if (success) {
+
+                finish();
+                Intent myIntent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(myIntent);
 
 
             } else {

@@ -1,6 +1,5 @@
 package com.bjergfelt.himev5.jobData;
 
-import android.app.job.JobScheduler;
 import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,12 +19,12 @@ import java.util.List;
  */
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
     private List<Job> jobs;
-    private final JobFragment.OnListFragmentInteractionListener mListener;
+    private final JobListFragment.OnListFragmentInteractionListener mListener;
     Location userLocation ;
 
 
 
-    public CardAdapter(List<Job> items, JobFragment.OnListFragmentInteractionListener listener, Location location) {
+    public CardAdapter(List<Job> items, JobListFragment.OnListFragmentInteractionListener listener, Location location) {
         jobs = new ArrayList<>(items);
         mListener = listener;
         userLocation = location;
@@ -51,7 +50,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
         holder.mItem = jobs.get(position);
         holder.mIdView.setText(jobs.get(position).getName());
         holder.mContentView.setText(price);
-        holder.mLocation.setText(""+jobs.get(position).getLocationLatLong());
+        holder.mLocation.setText("Lyngby");
+        //holder.mLocation.setText(""+jobs.get(position).getLocationLatLong());
         holder.kmText.setText(kilometerFormatter + " km");
         holder.bind(holder.mItem);
         //TODO Store pictures on a server instead of locally

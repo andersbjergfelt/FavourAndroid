@@ -17,9 +17,9 @@ import com.bjergfelt.himev5.model.User;
  SharedPreferences is an interface for accessing and modifying preference data returned by getSharedPreferences(String,int) feks.
  Modifications to the preferences must go through an SharedPreferences.Editor object to ensure the preference values remain in a consistent state and control when they are committed to storage.
 */
-public class PreferenceManager {
+public class OwnPreferenceManager {
 
-    private String TAG = PreferenceManager.class.getSimpleName();
+    private String TAG = OwnPreferenceManager.class.getSimpleName();
 
     //Shared Preferences
     SharedPreferences pref;
@@ -60,12 +60,12 @@ public class PreferenceManager {
         editor.putLong(KEY_USER_LONGTITUDE, user.getLongtitude());
         editor.putLong(KEY_USER_LATITUDE, user.getLatitude());
         editor.commit();
-        Log.e(TAG, "User is stored in shared preferences + " + user.getName());
+        Log.e(TAG, "User is stored in shared preferences + " + user.getEmail());
     }
 
 
     public User getUser(){
-        if (pref.getString(KEY_USER_ID,null) != null){
+        if (pref.getString(KEY_USER_EMAIL,null) != null){
             String id, name, email;
             Location location = new Location("location");
             id = pref.getString(KEY_USER_ID,null);
@@ -82,7 +82,7 @@ public class PreferenceManager {
         return null;
     }
 
-    public PreferenceManager(Context context) {
+    public OwnPreferenceManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();

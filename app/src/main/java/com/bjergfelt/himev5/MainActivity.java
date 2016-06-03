@@ -1,48 +1,37 @@
 package com.bjergfelt.himev5;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.IdRes;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
-import com.bjergfelt.himev5.Chat.ChatActivity;
 import com.bjergfelt.himev5.Chat.ChatRoomActivity;
 import com.bjergfelt.himev5.Util.HTTPManager;
+import com.bjergfelt.himev5.Util.OwnPreferenceManager;
 import com.bjergfelt.himev5.addJob.addJobActivity;
 import com.bjergfelt.himev5.jobData.DataProvider;
 import com.bjergfelt.himev5.jobData.Job;
 import com.bjergfelt.himev5.jobData.JobDetailFragment;
-import com.bjergfelt.himev5.jobData.JobFragment;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.bjergfelt.himev5.jobData.JobListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +44,7 @@ import java.util.List;
  */
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, JobFragment.OnListFragmentInteractionListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, JobListFragment.OnListFragmentInteractionListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String LOCATION_KEY = "Location";
     DataProvider dp = new DataProvider();
@@ -63,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Location location;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    ViewPagerAdapter adapter;
+    TextView navHeaderName;
+            ViewPagerAdapter adapter;
     private int[] tabIcons = {
             R.drawable.ic_view_list_white_48dp,
             R.drawable.ic_google_maps_white_48dp
@@ -74,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OwnPreferenceManager preferenceManager = new OwnPreferenceManager(this);
         //user interface layout for this Activity
         //To edit user interface go look for res/layout/activity_main.xml file.
         setContentView(R.layout.activity_main);
@@ -117,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -129,9 +121,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void setupViewPager(ViewPager viewPager, Location location) {
-        JobFragment jobFragment = JobFragment.newInstance(location);
-       // getSupportFragmentManager().beginTransaction().add(R.id.sample_content_fragment, jobFragment).commit();
-        adapter.addFragment(jobFragment, "JobList");
+        JobListFragment jobListFragment = JobListFragment.newInstance(location);
+       // getSupportFragmentManager().beginTransaction().add(R.id.sample_content_fragment, jobListFragment).commit();
+        adapter.addFragment(jobListFragment, "JobList");
 
         //Log.d("MAINACTIVITY", "" + dp.getJobList().size());
         adapter.addFragment(JobMapActivity.newInstance(dp.getJobList()), "JobMap");
@@ -202,6 +194,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, addJobActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_gallery) {
+            Intent intent = new Intent(this, ViewApplicantsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.view_profile) {
             Intent intent = new Intent(this, ProfileActivity.class);
@@ -211,6 +205,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
         } else if (id == R.id.nav_settings){
            Intent intent = new Intent(this, UserSettingsActivity.class);
+            startActivity(intent);
+        }
+          else if (id == R.id.your_job){
+            Intent intent = new Intent(this, OwnJobs.class);
             startActivity(intent);
         }
 
@@ -285,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // getSupportFragmentManager().beginTransaction().replace(R.id.sample_content_fragment, mFragmentList.get(position)).commit();
            /* switch (position) {
                 case 0:
-                    transaction.replace(R.id.sample_content_fragment, JobFragment.newInstance(location));
+                    transaction.replace(R.id.sample_content_fragment, JobListFragment.newInstance(location));
                     transaction.addToBackStack(null);
                     transaction.commit();
                     //return mFragmentList.get(position);

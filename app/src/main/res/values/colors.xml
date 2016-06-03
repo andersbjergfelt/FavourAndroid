@@ -6,7 +6,8 @@
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#c8e8ff</color>
-
+    <color name="viewBg">#f1f5f8</color>
+    <color name="album_title">#4c4c4c</color>
     <color name="list_divider">#dedede</color>
     <color name="bg_bubble_self">#E1E1E1</color>
     <color name="white">#FFFFFFFF</color>

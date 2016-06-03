@@ -1,7 +1,6 @@
 package com.bjergfelt.himev5.Util;
 
 import android.app.Application;
-import android.content.Intent;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -20,7 +19,7 @@ public class MyApplication extends Application {
 
     private static MyApplication mInstance;
 
-    private PreferenceManager pref;
+    private OwnPreferenceManager pref;
 
     @Override
     public void onCreate() {
@@ -40,9 +39,9 @@ public class MyApplication extends Application {
         return mRequestQueue;
     }
 
-    public PreferenceManager getPrefManager() {
+    public OwnPreferenceManager getPrefManager() {
         if (pref == null) {
-            pref = new PreferenceManager(this);
+            pref = new OwnPreferenceManager(this);
         }
 
         return pref;

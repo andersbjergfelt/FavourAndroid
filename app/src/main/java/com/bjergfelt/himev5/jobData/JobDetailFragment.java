@@ -154,9 +154,7 @@ public class JobDetailFragment extends Fragment {
     }
 
     public void showDialog() {
-        ApplyJobDialogFragment applyJobFragment = new ApplyJobDialogFragment();
-
-        applyJobFragment.show(getFragmentManager(),"apply");
+        ApplyJobDialogFragment.newInstance(mParam1,mParam2).show(getFragmentManager(),"apply");
 
     }
 

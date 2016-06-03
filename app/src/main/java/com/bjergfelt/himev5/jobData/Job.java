@@ -58,8 +58,29 @@ public class Job implements Parcelable {
         }
     };
 
+    public String getAssignedToUser() {
+        return assignedToUser;
+    }
 
+    public void setAssignedToUser(String assignedToUser) {
+        this.assignedToUser = assignedToUser;
+    }
 
+    public boolean isJobAssigned() {
+        return jobAssigned;
+    }
+
+    public void setJobAssigned(boolean jobAssigned) {
+        this.jobAssigned = jobAssigned;
+    }
+
+    public String getProvidedByUser() {
+        return providedByUser;
+    }
+
+    public void setProvidedByUser(String providedByUser) {
+        this.providedByUser = providedByUser;
+    }
 
     public String getName() {
         return jobName;

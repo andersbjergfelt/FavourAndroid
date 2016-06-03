@@ -12,7 +12,7 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
 import com.bjergfelt.himev5.jobData.JobDetailFragment;
-import com.bjergfelt.himev5.jobData.JobFragment;
+import com.bjergfelt.himev5.jobData.JobListFragment;
 
 /**
  * An activity representing a single Job detail screen. This
@@ -78,7 +78,7 @@ public class JobDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, JobFragment.class));
+            NavUtils.navigateUpTo(this, new Intent(this, JobListFragment.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

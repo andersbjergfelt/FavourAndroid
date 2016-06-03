@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.CameraUtil;
 import com.bjergfelt.himev5.Util.HTTPManager;
+import com.bjergfelt.himev5.Util.OwnPreferenceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class addJobActivity extends AppCompatActivity {
      * The formatted location address.
      */
     protected String mAddressOutput;
-
+    OwnPreferenceManager preferenceManager;
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
      */
@@ -99,12 +100,13 @@ public class addJobActivity extends AppCompatActivity {
         // Set defaults, then update using values stored in the Bundle.
         mAddressRequested = false;
         mAddressOutput = "";
+       preferenceManager = new OwnPreferenceManager(this);
         getLocationFromPrefs();
         updateValuesFromBundle(savedInstanceState);
 
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        double latitude = Double.longBitsToDouble(prefs.getLong("Latitude", 0));
+        final double latitude = Double.longBitsToDouble(prefs.getLong("Latitude", 0));
         double longitude = Double.longBitsToDouble(prefs.getLong("Longitude", 0));
 
 
@@ -140,19 +142,28 @@ public class addJobActivity extends AppCompatActivity {
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("AddJob", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                              //  DataProvider.addJob("123", textHeadline.getText().toString(), textDescription.getText().toString(), Double.parseDouble(textPrice.getText().toString()), Double.parseDouble(textEstimated.getText().toString()), "Handy", textPlace.getText().toString(), photo, mLastLocation);
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("AddJob", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
 
-                            }
-                        }).show();
-            }
-        });
+                                  //  DataProvider.addJob("123", textHeadline.getText().toString(), textDescription.getText().toString(), Double.parseDouble(textPrice.getText().toString()), Double.parseDouble(textEstimated.getText().toString()), "Handy", textPlace.getText().toString(), photo, mLastLocation);
+                                    Double[] location = {getLocationFromPrefs().getLatitude(),getLocationFromPrefs().getLongitude()};
+                                    String title = textHeadline.getText().toString();
+                                    String description = textDescription.getText().toString();
+                                    int estimated = Integer.parseInt(textEstimated.getText().toString());
+                                    int price = Integer.parseInt(textPrice.getText().toString());
+                                    String providedByUser = preferenceManager.getUser().getEmail();
+                                    addJob(title,"123textJob",description,price,estimated,"Rengøring",location, photo,false,null, providedByUser);
+                                }
+                            }).show();
+                }
+            });
+        }
 
 
         locationButton.setOnClickListener(new View.OnClickListener() {
@@ -170,6 +181,7 @@ public class addJobActivity extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //displayLocation();
+        test();
     }
 
     public Location getLocationFromPrefs() {
@@ -408,21 +420,27 @@ public class addJobActivity extends AppCompatActivity {
     }
 
     public void addJob (String jobName, String jobId, String description, int salary,
-                        int estimatedTime, String category, String[] locationLatLng,
+                        int estimatedTime, String category, Double[] locationLatLng,
                         Bitmap photo, boolean jobAssigned, String assignedToUser,
                         String providedByUser) {
 
         // HTTPManage instanse.
-        HTTPManager httpManager = new HTTPManager();
+        HTTPManager httpManager = new HTTPManager(this);
         // Call httpManager method addNewJob and include required variables.
         httpManager.addNewJob(jobName, jobId, description, salary, estimatedTime, category, locationLatLng,
                 photo, jobAssigned, assignedToUser, providedByUser);
 
     }
 
-    public void getAllUserJobs() {
-        
+    public void test(){
+        textHeadline.setText("Rengøring");
+        textDescription.setText("Rengøring af mit værelse");
+        textEstimated.setText("2");
+        textPrice.setText("200");
     }
+
+
+
 
 }
 

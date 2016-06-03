@@ -1,9 +1,7 @@
 package com.bjergfelt.himev5;
 
 
-import android.location.Location;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bjergfelt.himev5.Util.HTTPManager;
 import com.bjergfelt.himev5.jobData.Job;
-import com.bjergfelt.himev5.jobData.JobFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,7 +18,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class JobMapActivity extends Fragment implements OnMapReadyCallback {
     ArrayList<Job> jobs;
@@ -96,7 +91,7 @@ public class JobMapActivity extends Fragment implements OnMapReadyCallback {
        // mMap.addMarker(new MarkerOptions().position(copenhagen).title("Marker in Sydney"));*/
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(copenhagen,8f));
 
-        for (int i = 0; i < jobs.size(); i++){
+      /*  for (int i = 0; i < jobs.size(); i++){
             LatLng location = new LatLng(jobs.get(i).getLocationLatLong().getLatitude(), jobs.get(i).getLocationLatLong().getLongitude());
             mMap.addMarker(new MarkerOptions()
                     .position(location)
@@ -105,7 +100,13 @@ public class JobMapActivity extends Fragment implements OnMapReadyCallback {
 
 
 
-        }
+        }*/
+        LatLng location = new LatLng(55.763516, 12.494943);
+        mMap.addMarker(new MarkerOptions()
+                .position(location)
+                .title("Need cleaning!"));
+
+
 
     }
 

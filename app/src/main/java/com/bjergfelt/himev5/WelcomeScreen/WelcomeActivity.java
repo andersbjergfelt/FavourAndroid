@@ -20,9 +20,7 @@ import android.widget.TextView;
 
 import com.bjergfelt.himev5.LoginActivity;
 import com.bjergfelt.himev5.R;
-import com.bjergfelt.himev5.Util.PreferenceManager;
-
-import org.w3c.dom.Text;
+import com.bjergfelt.himev5.Util.OwnPreferenceManager;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -32,7 +30,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private TextView[] dots;
     private int[] layouts;
     private Button btnSkip, btnNext;
-    private PreferenceManager preferenceManager;
+    private OwnPreferenceManager ownPreferenceManager;
 
 
 
@@ -40,8 +38,8 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Checking for first time launch - before calling setContentView()
-        preferenceManager = new PreferenceManager(this);
-        if (!preferenceManager.isFirstTimeLaunch()){
+        ownPreferenceManager = new OwnPreferenceManager(this);
+        if (!ownPreferenceManager.isFirstTimeLaunch()){
             launchLogin();
             finish();
         }
@@ -102,7 +100,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void launchLogin() {
-        preferenceManager.setIsFirstTimeLaunch(false);
+        ownPreferenceManager.setIsFirstTimeLaunch(false);
         startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
         finish();
     }

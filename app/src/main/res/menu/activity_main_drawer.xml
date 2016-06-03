@@ -6,10 +6,17 @@
             android:id="@+id/add_job"
             android:icon="@drawable/ic_plus_black_36dp"
             android:title="Add Job" />
+
+        <item
+            android:id="@+id/your_job"
+            android:icon="@drawable/ic_notifications_black_24dp"
+            android:title="Your Jobs" />
+
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_account_multiple_black_36dp"
             android:title="View Applicants" />
+
         <item
             android:id="@+id/view_messages"
             android:icon="@drawable/ic_message_black_36dp"
@@ -19,7 +26,6 @@
             android:icon="@drawable/ic_account_black_36dp"
             android:title="View Profile" />
      </group>
-
     <item android:title="">
         <menu>
             <item
@@ -31,6 +37,6 @@
                 android:icon="@drawable/ic_information_black_36dp"
                 android:title="About" />
         </menu>
-    </item>-->
+    </item>
 
 </menu>

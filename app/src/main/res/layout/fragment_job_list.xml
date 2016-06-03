@@ -15,7 +15,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".jobData.JobFragment"
+    tools:context=".jobData.JobListFragment"
     tools:listitem="@layout/fragment_job_test"
     android:background="#FFFF66"/>
 </android.support.v4.widget.SwipeRefreshLayout>
