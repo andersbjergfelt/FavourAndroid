@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bjergfelt.himev5.Chat.ChatRoomActivity;
 import com.bjergfelt.himev5.Util.HTTPManager;
 import com.bjergfelt.himev5.Util.OwnPreferenceManager;
 import com.bjergfelt.himev5.addJob.addJobActivity;
@@ -200,10 +199,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.view_profile) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
-        } else if (id == R.id.view_messages) {
-            Intent intent = new Intent(this, ChatRoomActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_settings){
+        }
+        else if (id == R.id.nav_settings){
            Intent intent = new Intent(this, UserSettingsActivity.class);
             startActivity(intent);
         }

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,8 +51,9 @@ public class addJobActivity extends AppCompatActivity {
     private TextView textEstimated;
     private TextView textPrice;
     private ImageButton locationButton;
-    private Bitmap photo;
+    private Bitmap photo = null;
     String mCurrentPhotoPath;
+    HTTPManager httpManager;
     protected static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
     protected static final String LOCATION_ADDRESS_KEY = "location-address";
     /**
@@ -81,7 +83,6 @@ public class addJobActivity extends AppCompatActivity {
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
     final Context context = this;
-    private String filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +101,10 @@ public class addJobActivity extends AppCompatActivity {
         // Set defaults, then update using values stored in the Bundle.
         mAddressRequested = false;
         mAddressOutput = "";
-       preferenceManager = new OwnPreferenceManager(this);
+        preferenceManager = new OwnPreferenceManager(this);
         getLocationFromPrefs();
         updateValuesFromBundle(savedInstanceState);
-
+        httpManager = new HTTPManager(this);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final double latitude = Double.longBitsToDouble(prefs.getLong("Latitude", 0));
@@ -158,7 +159,12 @@ public class addJobActivity extends AppCompatActivity {
                                     int estimated = Integer.parseInt(textEstimated.getText().toString());
                                     int price = Integer.parseInt(textPrice.getText().toString());
                                     String providedByUser = preferenceManager.getUser().getEmail();
-                                    addJob(title,"123textJob",description,price,estimated,"Rengøring",location, photo,false,null, providedByUser);
+                                    Log.d("PHOTO", ""+photo.getByteCount());
+
+                                    // HTTPManage instanse.
+
+                                    // Call httpManager method addNewJob and include required variables.
+                                    httpManager.addNewJob(title,"123textJob",description,price,estimated,"Rengøring",location, photo,false,null, providedByUser);
                                 }
                             }).show();
                 }
@@ -366,7 +372,8 @@ public class addJobActivity extends AppCompatActivity {
            /* Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             iv.setImageBitmap(imageBitmap);*/
-            cameraUtil.scalePicture(photo,iv, mCurrentPhotoPath);
+
+            scalePicture();
 
         } else if (requestCode == REQUEST_CHOOSE_PHOTO && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
@@ -377,15 +384,15 @@ public class addJobActivity extends AppCompatActivity {
             cursor.moveToFirst();
 
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            filePath = cursor.getString(columnIndex);
+            String filePath = cursor.getString(columnIndex);
             cursor.close();
 
-           photo  = BitmapFactory.decodeFile(filePath);
+           photo = BitmapFactory.decodeFile(filePath);
             Log.w("Image ", "selected!");
 
             //Coverimage scaleres billedet og gemmes i coverimage-variablen
-            cameraUtil.scalePicture(photo,iv,filePath);
-
+            //cameraUtil.scalePicture(photo,iv,filePath);
+            scalePicture();
             //Posten sendes først når der klikkes på send!
         }
     }
@@ -412,6 +419,32 @@ public class addJobActivity extends AppCompatActivity {
         }
     }
 
+    public void scalePicture() {
+        // Get the dimensions of the View
+        int targetW = iv.getWidth();
+        int targetH = iv.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        photo = bitmap;
+        iv.setImageBitmap(bitmap);
+
+    }
+
     private void openGallery() {
         //Åbner galleriet og afventer result - resultatet sendes til onActivityResults med requestcode
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
@@ -419,18 +452,11 @@ public class addJobActivity extends AppCompatActivity {
         startActivityForResult(galleryIntent, REQUEST_CHOOSE_PHOTO);
     }
 
-    public void addJob (String jobName, String jobId, String description, int salary,
-                        int estimatedTime, String category, Double[] locationLatLng,
-                        Bitmap photo, boolean jobAssigned, String assignedToUser,
-                        String providedByUser) {
 
-        // HTTPManage instanse.
-        HTTPManager httpManager = new HTTPManager(this);
-        // Call httpManager method addNewJob and include required variables.
-        httpManager.addNewJob(jobName, jobId, description, salary, estimatedTime, category, locationLatLng,
-                photo, jobAssigned, assignedToUser, providedByUser);
 
-    }
+
+
+
 
     public void test(){
         textHeadline.setText("Rengøring");

@@ -2,6 +2,7 @@ package com.bjergfelt.himev5;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,26 +12,41 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.bjergfelt.himev5.Chat.ChatActivity;
-import com.bjergfelt.himev5.Chat.ChatRoom;
+import com.bjergfelt.himev5.Chat.Applicant;
 import com.bjergfelt.himev5.Chat.ChatRoomsAdapter;
 import com.bjergfelt.himev5.Chat.SimpleDividerItemDecoration;
+import com.bjergfelt.himev5.Util.OwnPreferenceManager;
+import com.bjergfelt.himev5.jobData.Job;
+import com.bjergfelt.himev5.jobData.OwnJobsAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ViewApplicantsActivity extends AppCompatActivity {
     private String TAG = ViewApplicantsActivity.class.getSimpleName();
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private ArrayList<ChatRoom> chatRoomArrayList;
+    private ArrayList<Applicant> listOfApplicantArrayList;
     private ChatRoomsAdapter mAdapter;
     private RecyclerView recyclerView;
+    private RequestQueue requestQueue;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        OwnPreferenceManager ownPreferenceManager = new OwnPreferenceManager(this);
         /**
          * Check for login session. If not logged in launch
          * login activity
@@ -45,39 +61,13 @@ public class ViewApplicantsActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_chat_room_list);
 
-        /**
-         * Broadcast receiver calls in two scenarios
-         * 1. gcm registration is completed
-         * 2. when new push notification is received
-         * */
-        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                // checking for type intent filter
-                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
-                    // gcm successfully registered
-                    // now subscribe to `global` topic to receive app wide notifications
-                    subscribeToGlobalTopic();
-
-                } else if (intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)) {
-                    // gcm registration id is stored in our server's MySQL
-                    Log.e(TAG, "GCM registration id is sent to our server");
-
-                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    // new push notification is received
-                    handlePushNotification(intent);
-                }
-            }
-        };*/
-
-        chatRoomArrayList = new ArrayList<>();
-        ChatRoom cr = new ChatRoom("Cz_2213", "Martin", "Hej, er du hjemme?", "12-12-2014",1);
-        chatRoomArrayList.add(cr);
-        chatRoomArrayList.add(cr);
+        listOfApplicantArrayList = new ArrayList<>();
+        Applicant cr = new Applicant("Anders","Hej, er du hjemme?",new Date());
+        listOfApplicantArrayList.add(cr);
+        listOfApplicantArrayList.add(cr);
         Log.e(TAG,cr.getName());
-        Log.e(TAG,chatRoomArrayList.size()+"");
-        mAdapter = new ChatRoomsAdapter(this, chatRoomArrayList);
+        Log.e(TAG, listOfApplicantArrayList.size()+"");
+        mAdapter = new ChatRoomsAdapter(this, listOfApplicantArrayList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(
@@ -91,10 +81,10 @@ public class ViewApplicantsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 // when chat is clicked, launch full chat thread activity
-                ChatRoom chatRoom = chatRoomArrayList.get(position);
+                Applicant applicant = listOfApplicantArrayList.get(position);
                 Intent intent = new Intent(ViewApplicantsActivity.this, ChatActivity.class);
-                intent.putExtra("chat_room_id", chatRoom.getId());
-                intent.putExtra("name", chatRoom.getName());
+                intent.putExtra("chat_room_id", applicant.getName());
+                intent.putExtra("name", applicant.getName());
                 startActivity(intent);
             }
 
@@ -108,6 +98,66 @@ public class ViewApplicantsActivity extends AppCompatActivity {
         /**
          * Updates the chat list unread count and the last message
          */
-
+        getAllApplicants(ownPreferenceManager.getUser().getEmail());
     }
+
+
+
+    public void getAllApplicants(String email) {
+        requestQueue = Volley.newRequestQueue(this);
+
+        //------Ajax------
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://apifavour-ab207.rhcloud.com/jobs/getUsersJobs/"+email, null,
+                new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        try {
+                            Log.w("response size: ", "" + response.length());
+                            for (int i = 0; i < response.length(); i++) {
+                                String applicant ="";
+                                JSONObject jsonObject = response.getJSONObject(i);
+
+                                //Er kun interesseret i applicants array. Vi kan få dem sorteret ved at finde userens job, og få alle applicants derfra
+
+                                String jobName = jsonObject.getString("jobName");
+
+                                JSONArray applicants = jsonObject.getJSONArray("applicants");
+
+                                for (int j = 0; j <applicants.length();j++){
+                                    applicant = applicants.getString(j);
+
+                                    listOfApplicantArrayList.add(new Applicant(applicant,"Ansøgning:" + " " +jobName,new Date()));
+                                }
+
+
+                                // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
+                                // All jobs fragment
+                                // fx allJobsFragment.post.add(job);
+
+                                mAdapter.notifyDataSetChanged();
+                            }
+                            //recyclerView.invalidate();
+                            //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
+                            mAdapter = new ChatRoomsAdapter(getApplicationContext(), listOfApplicantArrayList);
+                            recyclerView.setAdapter(mAdapter);
+                            mAdapter.notifyDataSetChanged();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.w("ajax error", e.getMessage().toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.w("error, getAllJobs", "response error listener: " + error);
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+        Log.w("AJAX", "GET ALL POSTS, success");
+        //------Ajax slut------
+    }
+
 }

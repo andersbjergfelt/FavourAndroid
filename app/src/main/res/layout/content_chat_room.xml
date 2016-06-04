@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        tools:listitem="@layout/chat_rooms_list_row"
+        tools:listitem="@layout/applicants_list_row"
         />
 
 

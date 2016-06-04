@@ -10,13 +10,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bjergfelt.himev5.R;
-import com.bjergfelt.himev5.addJob.FetchAddressIntentService;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by andersbjergfelt on 06/05/2016.
@@ -24,58 +25,41 @@ import java.util.Date;
 public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.ViewHolder> {
 
     private Context context;
-    private ArrayList<ChatRoom> chatRoomArrayList = new ArrayList<>();
+    private ArrayList<Applicant> listOfApplicantArrayList = new ArrayList<>();
     private static String today;
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, message, timestamp,count;
+        public TextView name, template, timestamp;
 
         public ViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
-            message = (TextView) itemView.findViewById(R.id.message_chatroom);
+            template = (TextView) itemView.findViewById(R.id.extraText_applicants);
             timestamp = (TextView) itemView.findViewById(R.id.timestamp);
-            count = (TextView) itemView.findViewById(R.id.count);
+
 
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ChatRoom chatRoom = chatRoomArrayList.get(position);
-        holder.name.setText(chatRoom.getName());
-        holder.message.setText(chatRoom.getLastMessage());
-        if (chatRoom.getUnreadCount() > 0){
-            holder.count.setText(String.valueOf(chatRoom.getUnreadCount()));
-            holder.count.setVisibility(View.VISIBLE);
-        }else{
-            holder.count.setVisibility(View.GONE);
-        }
+        // Create an instance of SimpleDateFormat used for formatting
+    // the string representation of date (month/day/year)
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.GERMANY);
 
-        holder.timestamp.setText(getTimeStamp(chatRoom.getTimestamp()));
+    // Get the date today using Calendar object.
+        Date today = Calendar.getInstance().getTime();
+    // Using DateFormat format method we can create a string
+    // representation of a date with the defined format.
+        String reportDate = df.format(today);
+        Applicant applicant = listOfApplicantArrayList.get(position);
+        holder.name.setText(applicant.getName());
+        holder.template.setText(applicant.getTemplate());
+
+        holder.timestamp.setText(reportDate);
 
 
-    }
-
-    private static String getTimeStamp(String dateStr) {
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String timestamp = "";
-
-        today = today.length() < 2 ? "0" + today : today;
-
-        try {
-            Date date = format.parse(dateStr);
-            SimpleDateFormat todayFormat = new SimpleDateFormat("dd");
-            String dateToday = todayFormat.format(date);
-            format = dateToday.equals(today) ? new SimpleDateFormat("hh:mm a") : new SimpleDateFormat("dd LLL, hh:mm a");
-            String date1 = format.format(date);
-            timestamp = date1.toString();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return timestamp;
     }
 
     public interface ClickListener {
@@ -88,13 +72,13 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
 
     @Override
     public int getItemCount() {
-        return chatRoomArrayList.size();
+        return listOfApplicantArrayList.size();
     }
 
 
-    public ChatRoomsAdapter(Context context, ArrayList<ChatRoom> chatRoomArrayList){
+    public ChatRoomsAdapter(Context context, ArrayList<Applicant> listOfApplicantArrayList){
         this.context = context;
-        this.chatRoomArrayList = chatRoomArrayList;
+        this.listOfApplicantArrayList = listOfApplicantArrayList;
 
         Calendar calendar = Calendar.getInstance();
         today = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
@@ -103,7 +87,7 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chat_rooms_list_row, parent, false);
+                .inflate(R.layout.applicants_list_row, parent, false);
         ViewHolder viewHolder = new ViewHolder(itemView);
         return viewHolder;
 
@@ -153,4 +137,9 @@ public class ChatRoomsAdapter extends RecyclerView.Adapter<ChatRoomsAdapter.View
 
         }
     }
+
+
+
+
+
 }

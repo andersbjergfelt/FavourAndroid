@@ -4,18 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.support.v4.app.DialogFragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -23,13 +16,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bjergfelt.himev5.Util.OwnPreferenceManager;
 import com.bjergfelt.himev5.jobData.Job;
-import com.bjergfelt.himev5.model.Applicant;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -155,8 +146,6 @@ public class ApplyJobDialogFragment extends DialogFragment {
         });
 
         Volley.newRequestQueue(getActivity()).add(jsonRequest);
-
-
     }
 
 }

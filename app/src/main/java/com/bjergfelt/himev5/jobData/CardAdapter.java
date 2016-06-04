@@ -1,7 +1,10 @@
 package com.bjergfelt.himev5.jobData;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,8 +60,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
         //TODO Store pictures on a server instead of locally
         //Right it takes a manually inserted bitmap or the picture that was captured.
         if(jobs.get(position).getPhoto() != null) {
-           // holder.iv.setImageBitmap(jobs.get(position).getPhoto());
-
+            String coverImageString = jobs.get(position).getPhoto();
+            byte[] imageBytes = Base64.decode(coverImageString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+           holder.iv.setImageBitmap(bitmap);
         }else {
            // holder.iv.setImageResource(jobs.get(position).getPhotoId());
         }

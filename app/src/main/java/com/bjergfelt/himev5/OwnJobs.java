@@ -59,14 +59,6 @@ public class OwnJobs extends AppCompatActivity {
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-
-        //prepareAlbums();
-
-        /*try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         OwnPreferenceManager preferenceManager = new OwnPreferenceManager(this);
         String userEmail = preferenceManager.getUser().getEmail();
         getAllOwnJobs(userEmail);
@@ -104,21 +96,6 @@ public class OwnJobs extends AppCompatActivity {
         });
     }
 
-    /**
-     * Adding few albums for testing
-     */
-   /* private void prepareAlbums() {
-        Job job = new Job("Cleaning","qqq", "Cleaning in my house", 55.46, 12.30, "cleaning", new Location("hello"),null,"none",true,"none");
-        ownJobList.add(job);
-
-        Job job1 = new Job("Cleaning","qqq", "Cleaning in my house", 55.46, 12.30, "cleaning", new Location("hello"),null,"none",true,"none");
-        ownJobList.add(job1);
-
-        Job job2 = new Job("Cleaning","qqq", "Cleaning in my house", 55.46, 12.30, "cleaning", new Location("hello"),null,"none",true,"none");
-        ownJobList.add(job2);
-
-        adapter.notifyDataSetChanged();
-    }*/
 
     /**
      * RecyclerView item decoration - give equal margin around grid item

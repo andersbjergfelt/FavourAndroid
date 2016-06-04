@@ -95,9 +95,6 @@
             android:name=".JobMapActivity"
             android:label="@string/title_activity_job_map" />
         <activity
-            android:name=".Chat.ChatRoomActivity"
-            android:label="Messages" />
-        <activity
             android:name=".JobDetailActivity"
             android:label="@string/title_job_detail"
             android:parentActivityName=".MainActivity"
@@ -121,7 +118,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bjergfelt.himev5.MainActivity" />
         </activity>
-        <activity android:name=".OwnJobs" />
+        <activity android:name=".OwnJobs"
+            android:theme="@style/MyMaterialTheme"/>
+
         <activity android:name=".ViewApplicantsActivity"></activity>
     </application>
 

@@ -52,12 +52,6 @@ public class HTTPManager {
 
     }
 
-    public ArrayList<Job> getJobList() {
-        return jobList;
-    }
-
-
-    private static final String prefixURL = "http://favour-godeting.rhcloud.com";
     DataProvider dataProvider = new DataProvider();
     //for Volley API
     public RequestQueue requestQueue;
@@ -87,12 +81,11 @@ public class HTTPManager {
         if (photo != null) {
             try {
                 ByteArrayOutputStream blob = new ByteArrayOutputStream();
-                photo.compress(Bitmap.CompressFormat.JPEG, 100, blob);
+                photo.compress(Bitmap.CompressFormat.JPEG, 80, blob);
                 byte[] imageBytes = blob.toByteArray();
                 final String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
                 //JSONArray jsonArrayParams = new JSONArray();
-
                 JSONObject jsonObjectParams = new JSONObject();
                 jsonObjectParams.put("jobName", jobName);
                 jsonObjectParams.put("jobId", "");
@@ -102,30 +95,12 @@ public class HTTPManager {
                 String estimatedTimeString = String.valueOf(estimatedTime);
                 jsonObjectParams.put("estimatedTime", estimatedTimeString);
                 jsonObjectParams.put("category", category);
-
-                // JSON Array for lattitude and longitude.
-                JSONArray latLngArray = new JSONArray();
                 // JSON object for lattitude and longitude.
-                JSONObject latLngObject = new JSONObject();
-                latLngObject.put("lng", "" + locationLatLng[1]);
-                latLngObject.put("lat", "" + locationLatLng[0]);
-
+                jsonObjectParams.put("lat", ""+locationLatLng[0]);
+                jsonObjectParams.put("lng", ""+locationLatLng[1]);
                 // Insert the JSON object containing longitude and attitude into the JSON array.
-                //latLngArray.put(latLngObject);
-                // Insert the latLngArray into the jsonObjectParams
-                jsonObjectParams.put("locationLatLng", latLngArray);
-
-                // JSON Array for photo.
-                JSONArray photoArray = new JSONArray();
-                // JSON object for photo and content type.
-                JSONObject photoObject = new JSONObject();
-                photoObject.put("image", encodedImage);
-                photoObject.put("contentType", "JPEG");
-                // Insert the JSON object containing photo and content type into the JSON array.
-                photoArray.put(photoObject);
-                // Insert the photoArray into the jsonObjectParams
-                jsonObjectParams.put("photo", photoArray);
-
+                jsonObjectParams.put("photoData", encodedImage);
+                jsonObjectParams.put("photoContent", "JPEG");
                 jsonObjectParams.put("jobAssigned", "");
                 jsonObjectParams.put("assignedToUser", assignedToUser);
                 jsonObjectParams.put("providedByUser", providedByUser);
@@ -139,11 +114,6 @@ public class HTTPManager {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.w("POST: ", "success!");
-                        try {
-                            jobID = response.get("_id").toString();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
 
                     }
                 }, new Response.ErrorListener() {
@@ -187,7 +157,7 @@ public class HTTPManager {
                 JSONObject jsonObject = new JSONObject(params);
 
                 Log.e("NEW JSON: ", jsonObject.toString());
-                Log.e(" NEWJSON: ", jsonObject.getString("lat"));
+                Log.e("NEW JSON: ", jsonObject.getString("lat"));
 
 
                 JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, postUrl, jsonObject, new Response.Listener<JSONObject>() {
@@ -196,11 +166,7 @@ public class HTTPManager {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.w("POST: ", "success!");
-                        try {
-                            jobID = response.get("_id").toString();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+
                     }
 
                 }, new Response.ErrorListener() {

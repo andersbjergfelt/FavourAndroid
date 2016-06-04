@@ -2,9 +2,12 @@ package com.bjergfelt.himev5.jobData;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,9 +43,9 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 }
 
 
-    public OwnJobsAdapter(Context mContext, List<Job> albumList) {
+    public OwnJobsAdapter(Context mContext, List<Job> ownJobList) {
         this.mContext = mContext;
-        this.ownJobList = albumList;
+        this.ownJobList = ownJobList;
     }
 
     @Override
@@ -61,7 +64,9 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 
         // loading album cover using Glide library
         //Glide.with(mContext).load(album.getThumbnail()).into(holder.thumbnail);
-        holder.thumbnail.setBackgroundColor(Color.MAGENTA);
+        byte[] imageBytes = Base64.decode(job.getPhoto(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        holder.thumbnail.setImageBitmap(bitmap);
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

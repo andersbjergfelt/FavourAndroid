@@ -11,7 +11,7 @@ public class CameraUtil {
 
 
 
-    public void scalePicture(Bitmap photo, ImageView iv, String mCurrentPhotoPath) {
+    public Bitmap scalePicture(Bitmap photo, ImageView iv, String mCurrentPhotoPath) {
         // Get the dimensions of the View
         int targetW = iv.getWidth();
         int targetH = iv.getHeight();
@@ -34,6 +34,7 @@ public class CameraUtil {
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         photo = bitmap;
         iv.setImageBitmap(bitmap);
+        return photo;
     }
 
 }

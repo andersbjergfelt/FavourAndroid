@@ -2,6 +2,8 @@ package com.bjergfelt.himev5.jobData;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,7 +125,10 @@ public class JobDetailFragment extends Fragment {
         tv.setText(mParam2.getName());
         desc.setText(mParam2.getDescription());
         if (mParam2.getPhoto() != null){
-            //iv.setImageBitmap(mParam2.getPhoto());
+
+            byte[] imageBytes = Base64.decode(mParam2.getPhoto(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            iv.setImageBitmap(bitmap);
         }else{
            // iv.setImageResource(mParam2.getPhotoId());
         }
