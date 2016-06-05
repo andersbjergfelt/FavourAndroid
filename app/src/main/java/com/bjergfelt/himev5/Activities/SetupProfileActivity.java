@@ -88,7 +88,7 @@ public class SetupProfileActivity extends AppCompatActivity {
                 ownPreferenceManager.setHaveUserMadeProfile(true);
                 Intent intent = new Intent(SetupProfileActivity.this, MainActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
@@ -170,10 +170,9 @@ public class SetupProfileActivity extends AppCompatActivity {
             photo = BitmapFactory.decodeFile(filePath);
             Log.w("Image ", "selected!");
 
-            //Coverimage scaleres billedet og gemmes i coverimage-variablen
-            //cameraUtil.scalePicture(photo,iv,filePath);
+            //Coverimage scaleres billedet
+
             scalePicture();
-            //Posten sendes først når der klikkes på send!
         }
     }
 
@@ -233,9 +232,6 @@ public class SetupProfileActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public void addProfile(String firstName, String lastName, String city, String email,
                            Bitmap photo) {
         if (photo != null) {
@@ -253,9 +249,6 @@ public class SetupProfileActivity extends AppCompatActivity {
                 jsonObjectParams.put("lastname", lastName);
                 jsonObjectParams.put("city", city);
                 jsonObjectParams.put("photo", encodedImage);
-
-
-
 
                 String postUrl = "http://apifavour-ab207.rhcloud.com/profile/createProfile";
 

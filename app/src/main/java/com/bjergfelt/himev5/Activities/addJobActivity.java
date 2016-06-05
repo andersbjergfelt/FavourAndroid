@@ -43,7 +43,7 @@ public class addJobActivity extends AppCompatActivity {
 
 
     private static final int REQUEST_CHOOSE_PHOTO = 2;
-    CameraUtil cameraUtil = new CameraUtil();
+
 
 
     //Beskriver hvor mange billeder man vil tage.

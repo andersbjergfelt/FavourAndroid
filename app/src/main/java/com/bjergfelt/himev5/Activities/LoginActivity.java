@@ -94,9 +94,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         Typeface roboto = Typeface.createFromAsset(getAssets(),
-                "font/Roboto-Thin.ttf"); //use this.getAssets if you are calling from an Activity
+                "font/Roboto-Thin.ttf");
         mEmailView.setTypeface(roboto);
-        mEmailView.setText("bjergfelta@gmail.com");
+
         httpManager = new HTTPManager(this);
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -588,7 +588,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             showProgress(false);
 
             if (success) {
-                ownPreferenceManager.getUser().setEmail(mEmail);
+                //ownPreferenceManager.getUser().setEmail(mEmail);
                 finish();
                 Intent myIntent = new Intent(getApplicationContext(),SetupProfileActivity.class);
                 startActivity(myIntent);

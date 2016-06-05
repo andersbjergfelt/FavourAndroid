@@ -97,9 +97,9 @@ class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.action_delete_job:
+            /*case R.id.action_delete_job:
                 Toast.makeText(mContext, "Delete", Toast.LENGTH_SHORT).show();
-                return true;
+                return true;*/
             default:
         }
         return false;

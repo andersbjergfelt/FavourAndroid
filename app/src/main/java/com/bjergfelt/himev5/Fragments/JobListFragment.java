@@ -45,34 +45,33 @@ public class JobListFragment extends Fragment implements SearchView.OnQueryTextL
 
     //Hvis der klikkes på listen, skal man bruge en listener
     private OnListFragmentInteractionListener mListener;
+
+    //RequestQueue bruges til Volley, som kalder vores backend
     public RequestQueue requestQueue;
+
+    //Til layout tabs
     private TabLayout tabLayout;
 
     private List<Job> jobs = new ArrayList<>();
 
     JobListAdapter cAdapter;
-    //private static RecyclerView.Adapter mAdapter;
 
-    //private List<Job> filteredJobs;
-     RecyclerView recyclerView;
+    RecyclerView recyclerView;
+
+
     private static Location userLocation;
+
     /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
-    private boolean mTwoPane;
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Tom konstruktør til hvis skærmen bliver vendt.
      */
     public JobListFragment() {
 
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+
         public static JobListFragment newInstance(Location location) {
         JobListFragment fragment = new JobListFragment();
+            //Tager lokationen ned i bundlen til brug senere. Lokationen kommer fra MainActivity
         Bundle args = new Bundle();
         args.putParcelable("location", location);
         fragment.setArguments(args);
@@ -82,8 +81,6 @@ public class JobListFragment extends Fragment implements SearchView.OnQueryTextL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Creating an instance of HTTPManager
-
 
         if (getArguments() != null) {
             userLocation = getArguments().getParcelable("location");
@@ -104,13 +101,14 @@ public class JobListFragment extends Fragment implements SearchView.OnQueryTextL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_job_list, container, false);
+
         cAdapter = new JobListAdapter(jobs, mListener, userLocation);
         recyclerView = (RecyclerView) view.findViewById(R.id.list);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(cAdapter);
         tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs);
-        //tabLayout.setVisibility(View.VISIBLE);
+
 
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
