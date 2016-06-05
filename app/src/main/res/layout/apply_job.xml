@@ -9,39 +9,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Want to provide extra information?"
+        android:text="Er du sikker på, at du vil ansøge?"
         android:id="@+id/textView3"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="23dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <EditText
-        android:layout_width="163dp"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/textView3"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_alignStart="@+id/textView3"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_alignEnd="@+id/textView3" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="If you leave the field empty a standard template will be send"
-        android:id="@+id/textView4"
-        android:layout_marginTop="35dp"
-        android:hint="If you leave the field empty a standard template will be send"
-        android:enabled="false"
-        android:textColor="@color/bg_screen1"
-        android:capitalize="words"
-        android:minLines="3"
-        android:maxWidth="200dp"
-        android:layout_below="@+id/editText"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_alignStart="@+id/textView3" />
 </RelativeLayout>

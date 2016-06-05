@@ -25,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:text="(123) 456-7890"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
         </RelativeLayout>
@@ -42,7 +41,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:text="(321) 654-0987"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
@@ -65,7 +63,6 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="chintan@letsnurture.com"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
         </RelativeLayout>
@@ -110,7 +107,6 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="202 Park Street, Los Angeles"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 

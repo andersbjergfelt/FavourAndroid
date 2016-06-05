@@ -5,37 +5,33 @@
         <item
             android:id="@+id/add_job"
             android:icon="@drawable/ic_plus_black_36dp"
-            android:title="Add Job" />
+            android:title="Tilføj job" />
 
         <item
             android:id="@+id/your_job"
             android:icon="@drawable/ic_notifications_black_24dp"
-            android:title="Your Jobs" />
+            android:title="Dine jobs" />
 
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_account_multiple_black_36dp"
-            android:title="View Applicants" />
+            android:title="Se ansøgere" />
 
-        <item
-            android:id="@+id/view_messages"
-            android:icon="@drawable/ic_message_black_36dp"
-            android:title="View Messages" />
         <item
             android:id="@+id/view_profile"
             android:icon="@drawable/ic_account_black_36dp"
-            android:title="View Profile" />
+            android:title="Se din profil" />
      </group>
     <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings_black_36dp"
-                android:title="Settings" />
+                android:title="Indstillinger" />
             <item
                 android:id="@+id/about_us"
                 android:icon="@drawable/ic_information_black_36dp"
-                android:title="About" />
+                android:title="Om" />
         </menu>
     </item>
 

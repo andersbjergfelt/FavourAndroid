@@ -1,31 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="My Account">
-
-        <Preference
-            android:title="Username"
-            android:summary="rishabhp"
-            android:key="username" />
-
-        <EditTextPreference
-            android:title="Email"
-            android:summary="rishabh.pugalia@gmail.com"
-            android:key="email" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="Advanced">
+        android:title="Sensor">
 
         <CheckBoxPreference
-            android:title="Receive Notifications"
-            android:summary="Want to receive Push Notifications ?"
-            android:key="receiveNotifications"
+            android:title="Vibration"
+            android:summary="Vibration når der kommer et nyt job?"
+            android:key="receiveVibration"
             android:defaultValue="true" />
-
-
-
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -7,7 +7,7 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item android:id="@+id/action_search"
-        android:title="Search"
+        android:title="Søg"
         android:icon="@drawable/ic_magnify_white_24dp"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />

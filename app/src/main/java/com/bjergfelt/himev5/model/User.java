@@ -1,4 +1,4 @@
-package com.bjergfelt.himev5.model;
+package com.bjergfelt.himev5.Model;
 
 /**
  * Created by andersbjergfelt on 06/05/2016.

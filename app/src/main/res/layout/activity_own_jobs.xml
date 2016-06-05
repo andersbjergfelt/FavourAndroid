@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/backdrop"
+                    android:id="@+id/collapsing_imageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
@@ -45,17 +45,17 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/love_music"
+                        android:id="@+id/own_jobs"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/backdrop_title"
+                        android:text="Egne jobs"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/backdrop_title" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/backdrop_subtitle"
+                        android:text="Oversigt over egne jobs"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/backdrop_subtitle" />
 

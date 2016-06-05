@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 
-import com.bjergfelt.himev5.model.User;
+import com.bjergfelt.himev5.Model.User;
 
 /**
  * Created by andersbjergfelt on 06/05/2016.
@@ -38,6 +38,7 @@ public class OwnPreferenceManager {
 
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
 
+    private static final String HAVE_USER_MADE_PROFILE ="HaveUserMadeProfile";
 
 
     // All shared Preferences Keys
@@ -48,7 +49,7 @@ public class OwnPreferenceManager {
     private static final String KEY_USER_LOCATION = "user_location";
     private static final String KEY_USER_LATITUDE = "user_latitude";
     private static final String KEY_USER_LONGTITUDE = "user_longtitude";
-    private static final String KEY_NOTIFICATIONS = "notifications";
+
 
 
 
@@ -79,7 +80,7 @@ public class OwnPreferenceManager {
             User user = new User(id,name,email,location);
             return user;
         }
-        return null;
+        return new User(null,null,KEY_USER_EMAIL);
     }
 
     public OwnPreferenceManager(Context context) {
@@ -89,40 +90,29 @@ public class OwnPreferenceManager {
     }
 
 
-    /*
-        Methods for intro slider. Skip it if false.
-     */
-    public void setIsFirstTimeLaunch(boolean isFirstTime){
+    public void setHaveUserMadeProfile(boolean madeProfile){
+        editor.putBoolean(HAVE_USER_MADE_PROFILE, madeProfile);
+        editor.commit();
+    }
+
+    public boolean haveUserMadeProfile(){
+        //True is value to return if this preference does not exist.
+        return pref.getBoolean(HAVE_USER_MADE_PROFILE, true);
+    }
+
+    public void setIsFirstTimeLaunch(boolean isFirstTime) {
         editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
         editor.commit();
     }
 
+    //True is value to return if this preference does not exist.
     public boolean isFirstTimeLaunch() {
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
     }
 
 
-    public void addNotification(String notification){
-
-        //get old notifications
-        String oldNotifications = getNotifications();
-
-        if (oldNotifications != null){
-            oldNotifications += "|" + notification;
-        } else {
-            oldNotifications = notification;
-        }
-
-        editor.putString(KEY_NOTIFICATIONS, oldNotifications);
-        editor.commit();
-    }
-
-    public String getNotifications(){
-        return pref.getString(KEY_NOTIFICATIONS,null);
-    }
 
     public void clear() {
-        editor.clear();
-        editor.commit();
+        _context.getSharedPreferences("PREF_NAME", 0).edit().clear().commit();
     }
 }

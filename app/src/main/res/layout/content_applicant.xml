@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="Chat.ChatActivity"
+    tools:context=".Activities.ProfileActivity"
     tools:showIn="@layout/activity_applicant">
 
     <LinearLayout
@@ -22,14 +22,15 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="Hej, jeg kunne godt tænke mig at arbejde for dig. Se min profil"
         android:id="@+id/textView5"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="46dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:singleLine="false" />
 
     <Button
         android:layout_width="wrap_content"

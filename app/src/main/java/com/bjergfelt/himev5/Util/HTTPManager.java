@@ -7,19 +7,21 @@ package com.bjergfelt.himev5.Util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.util.Base64;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.bjergfelt.himev5.jobData.DataProvider;
-import com.bjergfelt.himev5.jobData.Job;
-import com.bjergfelt.himev5.jobData.JobListFragment;
+import com.bjergfelt.himev5.LocalDB.DBHandler;
+import com.bjergfelt.himev5.Model.Job;
+import com.bjergfelt.himev5.Fragments.JobListFragment;
+import com.bjergfelt.himev5.Model.UserProfile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +30,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,23 +46,21 @@ public class HTTPManager {
     private Context mContext;
     private static final String TAG = "HTTPManager";
     private static HTTPManager instance = null;
-
-    private String jobID = "";
-    //TODO Insert real url
     private JobListFragment jobListFragment = new JobListFragment();
+    DBHandler dbHandler = new DBHandler(mContext);
+    List<UserProfile> userProfiles = new ArrayList<>();
 
     public HTTPManager() {
 
     }
 
-    DataProvider dataProvider = new DataProvider();
     //for Volley API
     public RequestQueue requestQueue;
     static ArrayList<Job> jobList = new ArrayList<>();
 
     public HTTPManager(Context context) {
         mContext = context;
-        //requestQueue = Volley.newRequestQueue(context.getApplicationContext());
+
     }
 
 
@@ -187,48 +188,124 @@ public class HTTPManager {
     }
 
 
-    /*public void settingJobID(String jobID){
-        String postUrl = "http://apifavour-ab207.rhcloud.com/jobs/editJob/"+jobID;
+    public void getProfile(String email) {
+        requestQueue = Volley.newRequestQueue(mContext);
+        final List<UserProfile> userProfileList = new ArrayList<>();
 
-        Map<String,String> params = new HashMap<>();
+        //------Ajax------
+        JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, "http://apifavour-ab207.rhcloud.com/profile/getProfile/" + email, null,
+                new Response.Listener<JSONObject>() {
 
+                    @Override
+                    public void onResponse(JSONObject response) {
 
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, postUrl, jsonObjectParams, new Response.Listener<JSONObject>() {
+                        try {
 
+                            String firstName = response.getString("firstname");
+                            String lastName = response.getString("lastname");
+                            String city = response.getString("city");
+                            int rating = response.getInt("rating");
+                            String photo = response.getString("photo");
 
+                            // Add new job with all the properties.
+                            //Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, location, photo, assignedToUser, jobAssigned, providedByUser);
+                            UserProfile userProfile = new UserProfile(firstName, lastName, city, rating, photo);
+                            userProfileList.add(userProfile);
+                            userProfiles = userProfileList;
 
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.w("ajax error", e.getMessage().toString());
+                        }
 
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.w("POST: ", "success!");
-                try {
-                    jobID = response.get("_id").toString();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Log.e("POST: ", "error! " + error.networkResponse);
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> map = new HashMap<String, String>();
-                map.put("Content-Type", "application/json; charset=UTF-8");
+                Log.w("error, getProfile", "response error listener: " + error);
 
-                return map;
-            }
-        };
 
-        Volley.newRequestQueue(mContext).add(jsonRequest);
-    } catch (JSONException e) {
-        e.printStackTrace();
+            }
+        });
+
+        requestQueue.add(jsonArrayRequest);
+        Log.w("AJAX", "GET PROFILE, success");
+
+
+        //------Ajax slut------
     }
-    }*/
+
+
+
+    public ArrayList<Job> getAllJobs() {
+        requestQueue = Volley.newRequestQueue(mContext);
+        final ArrayList<Job> jobs = new ArrayList<>();
+
+        //------Ajax------
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://apifavour-ab207.rhcloud.com/jobs/getAll", null,
+                new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        try {
+                            Log.w("response size: ", "" + response.length());
+                            for (int i = 0; i < response.length(); i++) {
+
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                String jobName = jsonObject.getString("jobName");
+                                String jobId = jsonObject.get("_id").toString();
+                                String description = jsonObject.getString("description");
+                                int salary = jsonObject.getInt("salary");
+                                int estimatedTime = jsonObject.getInt("estimatedTime");
+                                String category = jsonObject.getString("category");
+                                // lat and lng is saved inside "locationLatLng" as two seperate properties.
+
+                                //double lat = (double) latLngArray.get(0);
+                                //double lng = (double) latLngArray.get(1);
+                                Location location = new Location("jobLocation");
+
+                                location.setLatitude(jsonObject.getDouble("lat"));
+                                location.setLongitude(jsonObject.getDouble("lng"));
+                                // Photo is not working properly yet, therefor outcommented.
+                                String photo = jsonObject.getString("photoData");
+                                boolean jobAssigned = (Boolean) jsonObject.get("jobAssigned");
+                                String assignedToUser = jsonObject.getString("assignedToUser");
+                                String providedByUser = jsonObject.getString("providedByUser");
+
+                                // Add new job with all the properties.
+                                Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, location, photo, assignedToUser, jobAssigned, providedByUser);
+                                // fx Job job = new Job(jobName, jobId, description, salary, estimatedTime, category, latLngArray, jobAssigned, assignedToUser, providedByUser);
+                                // All jobs fragment
+                                // fx allJobsFragment.post.add(job);
+                                jobs.add(job);
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.w("ajax error", e.getMessage().toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.w("error, getAllJobs", "response error listener: " + error);
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+        Log.w("AJAX", "GET ALL JOB, success");
+        //------Ajax slut------
+        return jobs;
+    }
+
+    public List<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+
+    public void setUserProfiles(List<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+    }
 }
 
 
