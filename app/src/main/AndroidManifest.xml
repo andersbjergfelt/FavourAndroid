@@ -31,6 +31,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/MyMaterialTheme">
         <meta-data
             android:name="com.google.android.gms.version"
@@ -65,6 +66,7 @@
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/MyMaterialTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -118,10 +120,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bjergfelt.himev5.MainActivity" />
         </activity>
-        <activity android:name=".OwnJobs"
-            android:theme="@style/MyMaterialTheme"/>
-
-        <activity android:name=".ViewApplicantsActivity"></activity>
+        <activity
+            android:name=".OwnJobs"
+            android:theme="@style/MyMaterialTheme" />
+        <activity android:name=".ViewApplicantsActivity" />
+        <activity android:name=".SetupActivity"></activity>
     </application>
 
 </manifest>

@@ -67,22 +67,7 @@ public class ChatRoomThreadAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView;
-
-        //view type is to know where to render the chat message, left or right
-        if (viewType == SELF){
-            //It is yourself and the message will be shown to the right
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.chat_item_self, parent, false);
-
-        } else{
-            //Others
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.chat_item_other, parent,false);
-
-        }
-        return new ViewHolder(itemView);
-
+        return null;
     }
 
     @Override
