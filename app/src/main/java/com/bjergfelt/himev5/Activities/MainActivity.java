@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -18,13 +17,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,19 +29,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bjergfelt.himev5.Fragments.JobDetailFragment;
+import com.bjergfelt.himev5.Fragments.JobListFragment;
 import com.bjergfelt.himev5.LocalDB.DBHandler;
+import com.bjergfelt.himev5.Model.Job;
 import com.bjergfelt.himev5.Model.UserProfile;
 import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.HTTPManager;
 import com.bjergfelt.himev5.Util.OwnPreferenceManager;
-import com.bjergfelt.himev5.Model.Job;
-import com.bjergfelt.himev5.Fragments.JobDetailFragment;
-import com.bjergfelt.himev5.Fragments.JobListFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,22 +74,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         preferenceManager = new OwnPreferenceManager(this);
-        Log.d("ARRAYSIZE", "HEJ" +preferenceManager.getUser().getEmail());
+        //Får brugerens profil oplysninger til senere brug. Ligger det ned i et array
         getProfile(preferenceManager.getUser().getEmail());
+
         //user interface layout for this Activity
         //To edit user interface go look for res/layout/activity_main.xml file.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //Initialize different components for use later.
-       // tabLayout = (TabLayout) findViewById(R.id.tabs);
         httpManager = new HTTPManager(this);
-        //userProfiles = httpManager.getProfile("bjergfelta@gmail.com");
-        Log.d("ARRAYSIZE",""+userProfiles.size());
-        httpManager.getProfile(preferenceManager.getUser().getEmail());
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         jobs = httpManager.getAllJobs();
+        //Får location som er nede i preferences.
         getLocationFromPrefs();
 
 
@@ -105,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
-
         if (findViewById(R.id.sample_content_fragment) != null) {
 
             // However, if we're being restored from a previous state,
@@ -141,10 +133,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setupViewPager(ViewPager viewPager, Location location) {
         JobListFragment jobListFragment = JobListFragment.newInstance(location);
-       // getSupportFragmentManager().beginTransaction().add(R.id.sample_content_fragment, jobListFragment).commit();
+
         adapter.addFragment(jobListFragment, "JobList");
 
-        //Log.d("MAINACTIVITY", "" + dp.getJobList().size());
         adapter.addFragment(JobMapActivity.newInstance(jobs), "JobMap");
 
         viewPager.setAdapter(adapter);
@@ -159,9 +150,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public Location getLocationFromPrefs() {
         //Restoring preferences from Login
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        double latitude = Double.longBitsToDouble(prefs.getLong("Latitude", 0));
-        double longitude = Double.longBitsToDouble(prefs.getLong("Longitude", 0));
+        double latitude = preferenceManager.getUser().getLocation().getLatitude();
+        double longitude = preferenceManager.getUser().getLocation().getLongitude();
         Log.d("PREFS", "" + latitude + "," + longitude);
         location = new Location("location");
         location.setLatitude(latitude);
@@ -248,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onListFragmentInteraction(Job item) {
         // Create fragment and give it an argument specifying the article it should show
-
         String data = "data passing";
         this.job = item;
         JobDetailFragment jobDetailFragment = JobDetailFragment.newInstance(data, item);
@@ -276,8 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (location == null) {
             location = getLocationFromPrefs();
         }
-//        userProfiles = httpManager.getProfile(preferenceManager.getUser().getEmail());
-        Log.d("ARRAYSIZE",""+userProfiles.size());
+
 
         
     }
@@ -285,51 +273,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the location
         savedInstanceState.putParcelable(LOCATION_KEY, getLocationFromPrefs());
-//        mBottomBar.onSaveInstanceState(savedInstanceState);
+
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-
-
-
-    ////INNER VIEWPAGEADAPTER
-
-    private class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> titleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager supportFragmentManager) {
-            super(supportFragmentManager);
-
-
-        }
-
-
-        @Override
-        public Fragment getItem(int position) {
-
-        return mFragmentList.get(position);
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-
-            titleList.add(title);
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titleList.get(position);
-        }
-
-
     }
 
     @Override
@@ -376,8 +321,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         requestQueue.add(jsonArrayRequest);
         Log.w("AJAX", "GET PROFILE, success");
 
+    }
+
+    ////INNER VIEWPAGEADAPTER DER STYRER FRAGMENTS
+
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> titleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager supportFragmentManager) {
+            super(supportFragmentManager);
+
+
+        }
+        @Override
+        public Fragment getItem(int position) {
+
+        return mFragmentList.get(position);
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+
+            titleList.add(title);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titleList.get(position);
+        }
+
 
     }
+
+
+
+
 
 
 }

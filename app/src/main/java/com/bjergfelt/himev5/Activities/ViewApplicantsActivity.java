@@ -2,8 +2,8 @@ package com.bjergfelt.himev5.Activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,10 +18,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.bjergfelt.himev5.Adapters.ApplicantsAdapter;
-import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Model.Applicant;
-import com.bjergfelt.himev5.Util.SimpleDividerItemDecoration;
+import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.OwnPreferenceManager;
+import com.bjergfelt.himev5.Util.SimpleDividerItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONException;

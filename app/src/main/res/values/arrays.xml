@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="dialogPicture_array">
-    <item name="Take Picture">Tag billede</item>
+        <item name="Take Picture">Tag billede</item>
         <item name="Choose from gallery">Vælg fra galleri</item>
     </string-array>
 </resources>

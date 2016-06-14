@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Model.Applicant;
+import com.bjergfelt.himev5.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

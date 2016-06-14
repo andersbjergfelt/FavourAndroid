@@ -10,8 +10,7 @@ import java.io.Serializable;
 public class User implements Serializable {
     String id, name, email;
     Location location;
-    long Latitude;
-    long Longtitude;
+
 
     public User() {
     }
@@ -61,19 +60,4 @@ public class User implements Serializable {
         this.location = location;
     }
 
-    public long getLatitude() {
-        return Latitude;
-    }
-
-    public void setLatitude(long latitude) {
-        Latitude = latitude;
-    }
-
-    public long getLongtitude() {
-        return Longtitude;
-    }
-
-    public void setLongtitude(long longtitude) {
-        Longtitude = longtitude;
-    }
 }

@@ -3,17 +3,17 @@ package com.bjergfelt.himev5.Activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Model.UserProfile;
+import com.bjergfelt.himev5.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -58,8 +58,9 @@ public class OwnPreferenceManager {
         editor.putString(KEY_USER_ID, user.getId());
         editor.putString(KEY_USER_NAME, user.getName());
         editor.putString(KEY_USER_EMAIL,user.getEmail());
-        editor.putLong(KEY_USER_LONGTITUDE, user.getLongtitude());
-        editor.putLong(KEY_USER_LATITUDE, user.getLatitude());
+        //Rettelser
+        editor.putFloat(KEY_USER_LATITUDE, (float) user.getLocation().getLatitude());
+        editor.putFloat(KEY_USER_LONGTITUDE, (float) user.getLocation().getLongitude());
         editor.commit();
         Log.e(TAG, "User is stored in shared preferences + " + user.getEmail());
     }
@@ -72,8 +73,9 @@ public class OwnPreferenceManager {
             id = pref.getString(KEY_USER_ID,null);
             name = pref.getString(KEY_USER_NAME,null);
             email = pref.getString(KEY_USER_EMAIL, null);
-            double latitude = Double.longBitsToDouble(pref.getLong("Latitude", 0));
-            double longitude = Double.longBitsToDouble(pref.getLong("Longitude", 0));
+            //RETTELSER
+            double latitude = (double) pref.getFloat(KEY_USER_LATITUDE, 0);
+            double longitude = (double) pref.getFloat(KEY_USER_LONGTITUDE, 0);
             Log.d("PREFS", "" + latitude + "," + longitude);
             location.setLatitude(latitude);
             location.setLongitude(longitude);

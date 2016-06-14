@@ -26,8 +26,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.bjergfelt.himev5.Adapters.JobListAdapter;
-import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Model.Job;
+import com.bjergfelt.himev5.R;
+import com.bjergfelt.himev5.Util.HTTPManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,7 +103,7 @@ public class JobListFragment extends Fragment implements SearchView.OnQueryTextL
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_job_list, container, false);
 
-        cAdapter = new JobListAdapter(jobs, mListener, userLocation);
+        cAdapter = new JobListAdapter(getActivity(),jobs, mListener, userLocation);
         recyclerView = (RecyclerView) view.findViewById(R.id.list);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -116,11 +117,10 @@ public class JobListFragment extends Fragment implements SearchView.OnQueryTextL
         swipeRefreshLayout.setOnRefreshListener(new     SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // refreshList();
-                //HTTPManager httpManager = new HTTPManager(getContext());
-               // httpManager.getAllJobs();
+                jobs.clear();
+                getAllJobs();
 
-                //jobs = dt.getJobList();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -271,7 +271,7 @@ public class JobListFragment extends Fragment implements SearchView.OnQueryTextL
                             }
                                 //recyclerView.invalidate();
                             //Vi refresher listen, da dataen først nu er kommet ind, og er klar til visning.
-                            cAdapter = new JobListAdapter(jobs, mListener, userLocation);
+                            cAdapter = new JobListAdapter(getActivity(),jobs, mListener, userLocation);
                             recyclerView.setAdapter(cAdapter);
                             cAdapter.notifyDataSetChanged();
 

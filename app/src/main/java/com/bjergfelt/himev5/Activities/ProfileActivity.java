@@ -2,7 +2,6 @@ package com.bjergfelt.himev5.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,8 +15,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bjergfelt.himev5.LocalDB.DBHandler;
-import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Model.UserProfile;
+import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.HTTPManager;
 
 import org.json.JSONException;

@@ -46,7 +46,6 @@
                 android:layout_alignParentStart="false" />
 
 
-
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />

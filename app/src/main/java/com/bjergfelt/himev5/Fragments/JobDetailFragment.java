@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,27 +18,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Model.Job;
-
+import com.bjergfelt.himev5.R;
 
 import java.text.NumberFormat;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link interface
- * to handle interaction events.
- * Use the {@link JobDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class JobDetailFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final String ARG_JOB_ID = "job_id";
-    // TODO: Rename and change types of parameters
+
     private String mParam1;
     private Job mParam2;
     private TextView tv;
@@ -55,15 +46,8 @@ public class JobDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     *
-     * @return A new instance of fragment JobDetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
+
     public static JobDetailFragment newInstance(String param1, Job job) {
         JobDetailFragment fragment = new JobDetailFragment();
         Bundle args = new Bundle();
@@ -114,8 +98,8 @@ public class JobDetailFragment extends Fragment {
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         String price = formatter.format(mParam2.getPrice());
         priceText.setText(price);
-        locationText.setText(""+mParam2.getLocationLatLong());
-        estimatedText.setText(String.valueOf(mParam2.getEstimatedTime()) + "hours");
+        //locationText.setText(""+mParam2.getLocationLatLong());
+        estimatedText.setText(String.valueOf(mParam2.getEstimatedTime()) + " timer");
         tv.setText(mParam2.getName());
         desc.setText(mParam2.getDescription());
         if (mParam2.getPhoto() != null){
@@ -154,7 +138,7 @@ public class JobDetailFragment extends Fragment {
     }
 
     public void showDialog() {
-        ApplyJobDialogFragment.newInstance(mParam1,mParam2).show(getFragmentManager(),"apply");
+        ApplyJobDialogFragment.newInstance(mParam1,mParam2).show(getFragmentManager(),"Ansøg");
 
     }
 

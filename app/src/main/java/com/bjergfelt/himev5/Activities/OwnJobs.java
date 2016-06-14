@@ -21,10 +21,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.bjergfelt.himev5.Adapters.OwnJobsAdapter;
+import com.bjergfelt.himev5.Model.Job;
 import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.OwnPreferenceManager;
-import com.bjergfelt.himev5.Model.Job;
-import com.bjergfelt.himev5.Adapters.OwnJobsAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

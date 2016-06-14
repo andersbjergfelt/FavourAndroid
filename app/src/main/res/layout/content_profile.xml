@@ -34,7 +34,8 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/item_divider"
+        <include
+            layout="@layout/item_divider"
             android:layout_alignParentTop="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

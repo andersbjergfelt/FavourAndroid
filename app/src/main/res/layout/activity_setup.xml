@@ -44,5 +44,4 @@
     <include layout="@layout/content_setup_activity" />
 
 
-
 </android.support.design.widget.CoordinatorLayout>

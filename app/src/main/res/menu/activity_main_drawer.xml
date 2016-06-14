@@ -21,7 +21,7 @@
             android:id="@+id/view_profile"
             android:icon="@drawable/ic_account_black_36dp"
             android:title="Se din profil" />
-     </group>
+    </group>
     <item android:title="">
         <menu>
             <item

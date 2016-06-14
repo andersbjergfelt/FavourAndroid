@@ -19,7 +19,7 @@ public class DBHandler extends SQLiteOpenHelper {
     En idé der aldrig blev til virkelighed!
     Ville gerne kunne gemme en UserProfile ned i databasen..
 
-     */
+    */
 
     List<UserProfile> userProfiles = new ArrayList<>();
 

@@ -2,10 +2,9 @@ package com.bjergfelt.himev5.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-
 import android.content.DialogInterface;
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 
@@ -14,9 +13,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bjergfelt.himev5.Model.Job;
 import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.OwnPreferenceManager;
-import com.bjergfelt.himev5.Model.Job;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +43,6 @@ public class ApplyJobDialogFragment extends DialogFragment {
         ApplyJobDialogFragment fragment = new ApplyJobDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-
         args.putParcelable(ARG_PARAM2, job);
         fragment.setArguments(args);
         return fragment;

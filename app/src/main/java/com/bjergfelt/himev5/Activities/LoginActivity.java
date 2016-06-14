@@ -5,17 +5,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,10 +28,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bjergfelt.himev5.Model.User;
 import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Util.HTTPManager;
 import com.bjergfelt.himev5.Util.OwnPreferenceManager;
-import com.bjergfelt.himev5.Model.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -55,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private static final int MY_LOCATION_REQUEST = 1;
 
-    static Location mLastLocation;
+    private Location mLastLocation;
     private Button registerButton;
 
 
@@ -110,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 return false;
             }
         });
-        mPasswordView.setText("Ab1234!");
+
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 
@@ -388,7 +385,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         /*
         Storing location values in SharedPreferences to use it in different activites and removing redundant calls to locationManager.
          */
-
+        //ownPreferenceManager.getUser().setLocation(mLastLocation);
 
     }
 
@@ -442,9 +439,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         if (loginAccepted){
                             OwnPreferenceManager ownPreferenceManager = new OwnPreferenceManager(getApplicationContext());
                             ownPreferenceManager.clear();
-                            User user = new User(null, null, mEmail);
+                            User user = new User(null, null, mEmail, mLastLocation);
                             ownPreferenceManager.storeUser(user);
-                            //httpManager.getProfile(mEmail);
+                            Log.d("LOCATION", ""+ mLastLocation.getLatitude() + ", " +mLastLocation.getLongitude());
 
                             Log.d("LOGIN", user.getEmail());
                         }
@@ -572,9 +569,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 e.printStackTrace();
             }
             if (isRegisterAccepted()) {
-                ownPreferenceManager.clear();
                 OwnPreferenceManager ownPreferenceManager = new OwnPreferenceManager(getApplicationContext());
-                User user = new User(null, null, mEmail);
+                ownPreferenceManager.clear();
+                User user = new User(null, null, mEmail,mLastLocation);
                 ownPreferenceManager.storeUser(user);
             }
             return isRegisterAccepted();

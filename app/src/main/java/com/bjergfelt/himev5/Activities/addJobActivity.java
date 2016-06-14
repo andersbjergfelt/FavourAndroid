@@ -29,8 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bjergfelt.himev5.R;
-import com.bjergfelt.himev5.Util.Constants;
 import com.bjergfelt.himev5.Services.FetchAddressIntentService;
+import com.bjergfelt.himev5.Util.Constants;
 import com.bjergfelt.himev5.Util.HTTPManager;
 import com.bjergfelt.himev5.Util.OwnPreferenceManager;
 
@@ -67,6 +67,7 @@ public class addJobActivity extends AppCompatActivity {
     //Disse bruges i forbindelse med at få en adresse ud fra location objektet.
     protected static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
     protected static final String LOCATION_ADDRESS_KEY = "location-address";
+
 
     /**
      * Location objektet.
@@ -124,10 +125,6 @@ public class addJobActivity extends AppCompatActivity {
         updateValuesFromBundle(savedInstanceState);
         httpManager = new HTTPManager(this);
 
-        //Brugerens lokation er gemt i SharedPreferences efter brugeren har logget ind. Her hentes de frem.
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final double latitude = Double.longBitsToDouble(prefs.getLong("Latitude", 0));
-        double longitude = Double.longBitsToDouble(prefs.getLong("Longitude", 0));
 
 
         iv.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +133,7 @@ public class addJobActivity extends AppCompatActivity {
                 // Se ApplyJobDialogFragment for
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                builder.setTitle("Capture picture or choose from gallery");
+                builder.setTitle("Tag billede eller vælg fra galleriet");
 
                         builder.setItems(R.array.dialogPicture_array, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -208,9 +205,9 @@ public class addJobActivity extends AppCompatActivity {
 
     public Location getLocationFromPrefs() {
         //Får brugerens lokation som er blevet sat ved login
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        double latitude = Double.longBitsToDouble(prefs.getLong("Latitude", 0));
-        double longitude = Double.longBitsToDouble(prefs.getLong("Longitude", 0));
+
+        double latitude = preferenceManager.getUser().getLocation().getLatitude();
+        double longitude = preferenceManager.getUser().getLocation().getLongitude();
         Log.d("PREFS", "" + latitude + "," + longitude);
         mLastLocation = new Location("location");
         mLastLocation.setLatitude(latitude);
@@ -283,6 +280,7 @@ public class addJobActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        getLocationFromPrefs();
     }
 
     @Override
@@ -403,6 +401,7 @@ public class addJobActivity extends AppCompatActivity {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
@@ -410,7 +409,7 @@ public class addJobActivity extends AppCompatActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // Error occurred while creating the File
+                Log.e("ERROR", ex.getMessage());
 
             }
             // Continue only if the File was successfully created

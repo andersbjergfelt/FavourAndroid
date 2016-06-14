@@ -1,7 +1,6 @@
 package com.bjergfelt.himev5.Model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import java.io.Serializable;
 

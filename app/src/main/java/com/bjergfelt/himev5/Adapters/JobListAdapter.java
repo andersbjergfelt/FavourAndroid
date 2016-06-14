@@ -1,8 +1,14 @@
 package com.bjergfelt.himev5.Adapters;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.os.ResultReceiver;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -11,9 +17,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bjergfelt.himev5.R;
 import com.bjergfelt.himev5.Fragments.JobListFragment;
 import com.bjergfelt.himev5.Model.Job;
+import com.bjergfelt.himev5.R;
+import com.bjergfelt.himev5.Services.FetchAddressIntentService;
+import com.bjergfelt.himev5.Util.Constants;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -26,13 +34,19 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.ViewHold
     private List<Job> jobs;
     private final JobListFragment.OnListFragmentInteractionListener mListener;
     Location userLocation ;
+    protected static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
+    protected static final String LOCATION_ADDRESS_KEY = "location-address";
+    private AddressResultReceiver mResultReceiver;
+    protected String mAddressOutput;
+    protected final static String LOCATION_KEY = "location-key";
+    private Context context;
 
 
-
-    public JobListAdapter(List<Job> items, JobListFragment.OnListFragmentInteractionListener listener, Location location) {
+    public JobListAdapter(Context context, List<Job> items, JobListFragment.OnListFragmentInteractionListener listener, Location location) {
         jobs = new ArrayList<>(items);
         mListener = listener;
         userLocation = location;
+        this.context = context;
         //super();
     }
 
@@ -46,6 +60,7 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        startIntentService(jobs.get(position).getLocationLatLong());
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         float distanceInKilometers = userLocation.distanceTo(jobs.get(position).getLocationLatLong()) / 1000;
         NumberFormat meterFormatter = NumberFormat.getInstance();
@@ -55,11 +70,11 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.ViewHold
         holder.mItem = jobs.get(position);
         holder.mIdView.setText(jobs.get(position).getName());
         holder.mContentView.setText(price);
-        holder.mLocation.setText("Lyngby");
+        holder.mLocation.setText(""+jobs.get(position).getEstimatedTime() + " timer");
         //holder.mLocation.setText(""+jobs.get(position).getLocationLatLong());
         holder.kmText.setText(kilometerFormatter + " km");
         holder.bind(holder.mItem);
-        //TODO Store pictures on a server instead of locally
+
         //Right it takes a manually inserted bitmap or the picture that was captured.
         if(jobs.get(position).getPhoto() != null) {
             String coverImageString = jobs.get(position).getPhoto();
@@ -219,6 +234,47 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.ViewHold
         public void bind(Job model) {
             mIdView.setText(model.getName());
         }
+    }
+
+
+    @SuppressLint("ParcelCreator")
+    class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        /**
+         * Receives data sent from FetchAddressIntentService and updates the UI in MainActivity.
+         */
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            // Display the address string or an error message sent from the intent service.
+            mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+            displayAddressOutput();
+
+
+        }
+    }
+
+    private String displayAddressOutput() {
+        return mAddressOutput;
+    }
+
+    protected void startIntentService(Location location) {
+        // Create an intent for passing to the intent service responsible for fetching the address.
+        Intent intent = new Intent(context, FetchAddressIntentService.class);
+
+        // Pass the result receiver as an extra to the service.
+        intent.putExtra(Constants.RECEIVER, mResultReceiver);
+
+        // Pass the location data as an extra to the service.
+        intent.putExtra(Constants.LOCATION_DATA_EXTRA, location);
+
+        // Start the service. If the service isn't already running, it is instantiated and started
+        // (creating a process for it if needed); if it is running then it remains running. The
+        // service kills itself automatically once all intents are processed.
+        context.startService(intent);
     }
 
 }

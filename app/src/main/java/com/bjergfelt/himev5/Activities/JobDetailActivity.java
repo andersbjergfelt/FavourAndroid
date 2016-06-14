@@ -2,18 +2,14 @@ package com.bjergfelt.himev5.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.bjergfelt.himev5.R;
-import com.bjergfelt.himev5.Fragments.JobDetailFragment;
 import com.bjergfelt.himev5.Fragments.JobListFragment;
+import com.bjergfelt.himev5.R;
 
 /**
  * An activity representing a single Job detail screen. This
